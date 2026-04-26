@@ -73,4 +73,26 @@ Living list of hypotheses across workshops. Each row carries a status (`open` / 
 
 ---
 
-*Last updated: Workshop 3 close (W3 marketplace economics: blended ARPU, 60/40 lock, $120 CAC ceiling, 20/12 liquidity floor, $275k capital plan, sale-escape reserve; W1 A5 $60-CAC hypothesis relaxed to $120 via A-W3-5).*
+---
+
+## Rev-2 — Pricing & Namespace (2026-05-06)
+
+Supersedes selected W1/W3 assumptions as noted. See `docs/08_pricing_namespace_rev2.md` for full memo.
+
+| ID | Assumption | Status | Evidence / Pointer | Owner (Workshop) |
+|---|---|---|---|---|
+| A-Rev2-1 | Viable premium single-name slots per top-100 US surname = **7 (planning); range 5–12**. Top-10 surnames support 10–12; rank-100 supports 4–6. | open | First-principles bound from SSA top-100 first names × culturally-coherent-solo-local-part filter (doc 08 §2.1). Cross-check via W1 LP Variant B sign-ups on offered single-name slots per surname. | Rev-2 / W1 |
+| A-Rev2-2 | 2-letter initials (`js@`, `jp@`) are priced in the Standard tier at MVP with a scarcity cap of **one per first-name-initial-pool per domain**; short-handle-premium mid-tier deferred to post-liquidity. | open | Design decision, doc 08 §2.2. Revisit with cohort data at month 18. | Rev-2 / W1 |
+| A-Rev2-3 | **Tier-differentiated 12-month retention: Premium 80%, Standard 55%** (range 45–65%), 3C-Budget 45% if ever enabled. **Supersedes W1 A7** (70% blanket). | open | Concierge MVP cohort is weak proxy; only live 12-mo cohort resolves. Doc 08 §4. | Rev-2 / W3 |
+| A-Rev2-4 | Standard-tier cost stack tolerates **$9/mo floor**, not the founder-proposed $5–$8. $5 is cash-flow-negative; $8 is marginal ($1.55 net); $9 nets $2.09. | open (math-derived, sensitive to support/abuse cost inputs) | Doc 08 §3.1. Validated if live cost-stack inputs hold within ±15% of modeled values over first 6 months. | Rev-2 / W3 |
+| A-Rev2-5 | **≥ 60% of Y1 signed domains in top-200 US surnames** (tightened from W2 A-W2-7's ≥ 50%) — Rev-2 compound-tier density economics require larger bearer pools. | open | Tightening of A-W2-7; measurable from W2 exp-1 outreach composition. | Rev-2 / W2 |
+| A-Rev2-6 | Standard-tier acquisitions can be sustained at **≥ 65% organic share (SEO + referral + owner-pull)** by month 18, **≥ 75% by month 30**. No paid channel clears the $24-at-1.8× standard-tier CAC ceiling. | open — **HIGHEST-PRIORITY Rev-2 unknown** | Doc 08 §5. First signal from W1 LP organic-channel-share tracking and first 6 months of live SEO. | Rev-2 / W1 |
+| A-Rev2-7 | Surname landing pages with compound-slot listing increase SEO rankability (more unique internal targets, more UGC density) vs. single-SKU pages. | open | Hypothesis only; testable by SEO A/B on 20 surname pages at 3-month mark post-launch. | Rev-2 / W1 |
+| A-Rev2-8 | Compound-slot abuse-reserve uplift of $0.25/renter-mo (blended to $0.40–$0.75) adequately covers 2.5× blast-radius increase **if** W4 commits to automated blacklist monitoring + tightened outbound rate limits (200/day on standard tier) in Y1. | open | Doc 08 §8. Gated by W4 final architecture decision. | Rev-2 / W4 |
+| A-Rev2-9 | Compound-slot policy caps (3 slots/person/domain, 20% surcharge on slots 2+, ID verification, non-waivable $25 onboarding fee) hold abuse-ring setup uneconomical at Rev-2 pricing. | open | Doc 08 §8.1, §8.3. Measurable via duplicate-identity audit on first 100 paid signups. | Rev-2 / W4 |
+| A-Rev2-10 | LP split-test (Variant B, per doc 08 §10.3) will show premium take-rate in the **15–25% range** (H-mid hypothesis). Outside this band forces repricing. | open — **Rev-2 central case gate** | K-Rev2-5. Doc 08 §2.3, §10.3. | Rev-2 / W1 |
+| A-Rev2-11 | Owner-pitch dollar quote of "$2,500–$3,000/yr at liquidity" (vs W2's "$1,500–$2,500/yr") materially lifts cold-outreach conversion rate (target: ≥ 20% relative lift). | open | Split W2 exp-1 cohort by pitch dollar-amount to measure. | Rev-2 / W2 |
+
+---
+
+*Last updated: Rev-2 close (2026-05-06). Pricing & namespace reopened: two-tier Premium $25 / Standard $9, 50 renters/domain, blended ARPU $11, capital $245k central. W1 A7 superseded by A-Rev2-3; W2 A-W2-7 tightened via A-Rev2-5; K-W3-1/2/3 revised in `_kill_criteria.md`.*

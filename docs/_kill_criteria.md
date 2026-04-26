@@ -42,9 +42,9 @@ Numeric thresholds that end the project cleanly, or force a pivot, rather than a
 
 | ID | Criterion | Threshold | Trigger action | Source | Owner |
 |---|---|---|---|---|---|
-| K-W3-1 | Blended platform-side renter CAC (trailing 3-month window, past month 6) | > $180 → KILL; $120–$180 → PIVOT (cut paid, triple SEO/referral investment); ≤ $120 → PROCEED | KILL / PIVOT / PROCEED | Internal marketing spend vs. paid-renter conversions; pre-launch proxy via W1 LP test (§2g-2) | W3 |
-| K-W3-2 | LTV / CAC ratio (trailing 3-month window, past month 12) | < 1.3× → KILL; 1.3–1.8× → PIVOT (raise price, cut cost, tighten target segment); ≥ 1.8× → PROCEED (target ≥ 2.5×) | KILL / PIVOT / PROCEED | Cohort analysis on first 200+ paying renters | W3 |
-| K-W3-3 | Renters per active domain at liquidity | Per-domain: < 12 renters after 18 months live → DELIST; ≥ 20 at 24 months = target. Marketplace: < 50 live domains AND < 1,000 paying renters by month 36 → KILL or PIVOT to platform-owned inventory (W2 §2k-i) | DELIST / KILL / PIVOT | Production metrics | W3 |
+| K-W3-1 **(Rev-2)** | Signup-mix-weighted blended platform-side renter CAC (trailing 3-month window, past month 6) | **> $100 → KILL; $67–$100 → PIVOT (cut paid standard-tier funnel entirely); ≤ $67 → PROCEED (target ≤ $48 at 2.5× LTV/CAC)**. *Rev-2 supersedes prior W3 thresholds of $180/$120 which assumed single-tier $220 LTV; Rev-2 blended LTV is $120.* | KILL / PIVOT / PROCEED | Internal marketing spend vs. paid-renter conversions; pre-launch proxy via W1 LP test (§2g-2). See `docs/08_pricing_namespace_rev2.md §9`. | W3 / Rev-2 |
+| K-W3-2 **(Rev-2)** | LTV / CAC ratio (trailing 3-month window, past month 12) | < 1.3× → KILL; 1.3–1.8× → PIVOT (raise standard to $11, cut support cost); ≥ 1.8× → PROCEED (target ≥ 2.5×). *Ratios unchanged; LTV input changes to $120 blended under Rev-2 (was $220).* | KILL / PIVOT / PROCEED | Cohort analysis on first 200+ paying renters; tier-separated preferred. See doc 08 §3.4, §9. | W3 / Rev-2 |
+| K-W3-3 **(Rev-2)** | Renters per active domain at liquidity | **Per-domain: < 25 renters after 18 months live → DELIST; ≥ 40 at 24 months = target (50 at steady-state).** Marketplace: **< 50 live domains AND < 2,000 paying renters by month 36 → KILL or PIVOT** to platform-owned inventory (W2 §2k-i). *Rev-2 supersedes prior W3 thresholds of 12/20/1,000 which assumed single-tier namespace.* | DELIST / KILL / PIVOT | Production metrics. See doc 08 §9. | W3 / Rev-2 |
 | K-W3-4 | Cohort 12-month renter retention | < 55% → KILL; 55–65% → PIVOT (price / cost / ICP refinement); ≥ 65% → PROCEED | KILL / PIVOT / PROCEED | First cohort to reach month 12 | W3 |
 | K-W3-5 | Cumulative contribution at month 24 (Lean plan) | < –$300k → KILL; –$300k to –$200k → PIVOT (throttle, cut ops); better than –$200k → PROCEED | KILL / PIVOT / PROCEED | Monthly financials | W3 |
 | K-W3-6 | Net platform contribution per renter-month (trailing 6 months, months 18+) | < $4.00 → KILL; $4.00–$5.50 → PIVOT (cost cut or price increase); ≥ $5.50 → PROCEED | KILL / PIVOT / PROCEED | Monthly unit-economics tracking | W3 |
@@ -56,4 +56,20 @@ Numeric thresholds that end the project cleanly, or force a pivot, rather than a
 
 ---
 
-*Last updated: Workshop 3 close (K-W3-1 filled at $120 PIVOT / $180 KILL; K-W3-2 filled at 1.8× floor / 2.5× target / 1.3× KILL; K-W3-3 filled at 20 target / 12 floor per-domain, 50 domains × 1,000 renters marketplace; added K-W3-4 through K-W3-8).*
+---
+
+## Rev-2 — Pricing & Namespace (2026-05-06)
+
+See `docs/08_pricing_namespace_rev2.md §9` for derivations. Rev-2 supersedes K-W3-1/2/3 numeric thresholds (updated in the Workshops 3–7 table above); criteria below are net-new under Rev-2.
+
+| ID | Criterion | Threshold | Trigger action | Source of evidence | Owner (Workshop) |
+|---|---|---|---|---|---|
+| K-Rev2-1 | Standard-tier organic-acquisition share (SEO + renter-referral + owner-referral) by month 18 | **< 50% → KILL standard tier; 50–65% → PIVOT (cut all paid standard-tier spend); ≥ 65% → PROCEED (target ≥ 75% by month 30)** | KILL / PIVOT / PROCEED | Marketing-attribution data; pre-launch proxy via W1 LP organic-channel-share tracking | Rev-2 / W1 |
+| K-Rev2-2 | Premium-tier share of total gross revenue (trailing 6-month window, past month 12) | **< 30% → PIVOT standard pricing up (raise to $11–12); ≥ 35% → PROCEED** | PIVOT / PROCEED | Revenue mix tracking | Rev-2 / W3 |
+| K-Rev2-3 | Per-domain blacklist incident rate (SpamHaus / SORBS / Barracuda, any one, per 100 live domain-years) | **> 3 → KILL compound tier, revert to single-tier namespace; 1–3 → PAUSE compound sign-ups on affected domains for 30 days; < 1 → PROCEED** | KILL / PAUSE / PROCEED | Daily automated RBL monitoring (per W4 §2d) | Rev-2 / W4 |
+| K-Rev2-4 | Standard-tier cohort 12-month retention | **< 45% → KILL standard tier; 45–55% → PIVOT (raise standard to $11–12, widen spread from premium); ≥ 55% → PROCEED** | KILL / PIVOT / PROCEED | First standard-tier cohort reaching month 12 | Rev-2 / W3 |
+| K-Rev2-5 | LP split-test premium take-rate (Variant B of W1 LP §2g-2, per doc 08 §10.3) | **< 15% → REPRICE (widen to $30/$8 or revert single-tier); 15–25% → PROCEED with 3A-mod; > 25% → CONSIDER three-tier expansion post-liquidity** | REPRICE / PROCEED / EXPAND | W1 LP experiment | Rev-2 / W1 |
+
+---
+
+*Last updated: Rev-2 close (2026-05-06). K-W3-1 revised to $67 PIVOT / $100 KILL; K-W3-2 ratios unchanged but blended LTV input drops to $120; K-W3-3 revised to 25 floor / 40 target per-domain, 50 domains × 2,000 renters marketplace; added K-Rev2-1 through K-Rev2-5.*
