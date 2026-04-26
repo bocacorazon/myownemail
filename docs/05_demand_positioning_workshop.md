@@ -6,6 +6,8 @@
 **Secondary reviewers:** Marketplace Economics Analyst, Domain Owner / Supply Advocate
 **Status:** DECISIVE — commits to a primary ICP, positioning frame, and pricing hypothesis. All locked decisions are pending falsification by the evidence plan in §2g.
 
+> **⚠ Rev-2 banner (2026-05-06).** The single-tier pricing hypothesis (§1, §2f: "$15/mo standard / $25/mo premium, ~25 renters/domain at liquidity") has been **reopened and superseded** on the pricing side by `docs/08_pricing_namespace_rev2.md`. Rev-2 splits the namespace into a **premium single-name tier ($25/mo, `john@smith.com`)** and a **standard compound tier ($9/mo, `john.paul@smith.com`)** with ~50 renters/domain at liquidity. Blended ARPU drops from $16.50 to ~$11; per-domain contribution rises. The LP experiment in §2g-2 should be extended to a three-variant split (A/B/C) per doc 08 §10.3 to resolve the premium-vs-standard cannibalization rate (K-Rev2-5). **A7 (70% annual retention) is superseded by tiered retention assumptions (A-Rev2-3) in doc 08 §4.** "Claim your name" frame is retained; secondary-reviewer brand notes in doc 08. Refer to doc 08 as source of truth for all pricing, ARPU, LTV, and CAC numbers going forward.
+
 ---
 
 ## 1. Executive Summary
