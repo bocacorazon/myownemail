@@ -30,9 +30,11 @@
 **Chosen owner ICP (locked).** **"Dormant Individual Holders"** — individuals (not businesses, not professional squatters) who registered a common-surname `.com` 8+ years ago, hold it under a personal name or WHOIS-privacy account, are *not* currently using it as a primary email domain, and have either parked it, put up a placeholder page, or let it sit on registrar default DNS. Secondary ICP: **"Resigned Squatters"** — small-portfolio (< 50 domains) individual investors whose asking prices have gone stale and who will trade a $5k imaginary sale price for real recurring income. **Tertiary ICP (Rev-1):** **"Long-Tail Portfolio Squatters"** — large-portfolio holders pitched on their *dead-tail inventory only*, contracted under a sale-escape clause that preserves flip optionality. Priority sub-segment across all three tiers: **Hispanic-surname `.com`s** (Garcia, Rodriguez, Martinez, Hernandez, Lopez, Gonzalez, Perez, and equivalents) with Spanish-language outreach and culturally-attuned pitch.
 
 **Chosen acquisition strategy (locked).**
-A two-tier funnel:
+An omnichannel, parallel-execution funnel:
 1. **Tier 1 — Concierge direct outreach.** Founder-led WHOIS/LinkedIn/certified-letter outreach to the top 200 US surname-matching `.com` domains, manually qualified, with a bespoke pitch. Target: 10–20 Tier-1 signings in the first 12 months.
-2. **Tier 2 — Demand-pull ("we have N renters waiting for your domain") reverse auction.** Once we have a waitlist on `myownemail.com`, we contact the owner of each requested domain with a concrete revenue estimate derived from the waitlist size. Converts much warmer than cold. Target: 15–40 signings in months 6–18.
+2. **Tier 2 — Decentralized OSINT Bounty.** A $1,000 public success-fee bounty, offloading CAC risk to freelance domain hunters.
+3. **Tier 3 — Programmatic Drop-Catching.** Automated sweeps of top-5,000 surnames on expiring auctions for 100%-owned margin.
+4. **Tier 4 — Demand-pull reverse auction.** Once a waitlist exists, pitching owners with concrete revenue numbers ("we have N renters waiting"). Converts much warmer than cold. Target: 15–40 signings in months 6–18.
 
 No performance marketing on the supply side — CAC math (§4) shows paid channels cannot clear.
 
@@ -283,6 +285,9 @@ Estimates are first-principles; ranges reflect the uncertainty across holder typ
 | **Founder attendance at surname/genealogy communities** | Reunions, Ancestry forums, Facebook groups | N/A; relational | Time-intensive | **$200–$500** | Months | Niche but genuine fit with the Surname-Match ICP. |
 | **Spanish-language concierge outreach (Rev-1)** | WHOIS + certified letter + WhatsApp-style outreach, Spanish-language pitch ("reclama tu apellido"), localized to Hispanic-surname holders (including LatAm-resident holders of US-surname `.com`s) | 4–10% | ~$15 letter + $15 labor = $30 | **$300–$750** | 6–12 weeks | **Priority sub-channel** — Garcia/Rodriguez/Martinez/etc. are top-15 US surnames; culturally-attuned pitch plausibly lifts conversion above English-language cold outreach. Test cohort in exp-1. |
 | **Bulk dead-tail pitch to large portfolio holders (Rev-1)** | Direct approach to known portfolio holders with sale-escape bulk contract covering 10–50 of their parked surname `.com`s | 3–8% at the holder level (all-or-nothing per holder) | ~$200 labor + legal per holder engaged | **$200–$500 per signed domain** if bulk deal lands | 8–16 weeks | Conditional on W5 sale-escape sign-off. Concentrated, binary outcome per holder. |
+| **Decentralized OSINT Bounty** | Public $1,000 bounty for anyone who successfully brokers a lease on a top-500 surname. Let freelance domain brokers and internet sleuths locate dormant holders. | N/A | $0 upfront | **$1,000 (fixed)** | Variable | **Run in parallel.** Shifts CAC risk entirely from internal labor to external performance. Hard-caps CAC. |
+| **Parking Platform Integration** | Partner with Sedo/Bodis/ParkingCrew. Inject a "List on MyOwnEmail for $150/mo" prompt when owners log in and see their $0.12/mo parking yields. | 2–5% of impressions | Platform rev-share | **$100–$300 (equivalent)** | 3–6 months dev | **Run in parallel.** Easier to close than ICANN registrar partnerships. Intercepts the squatter at the exact moment of disappointment. |
+| **Programmatic Drop-Catching** | Expand aperture from top-500 to top-5,000 surnames. Automate sweeps across DropCatch/SnapNames for expiring domain auctions. | Hit-driven | API cost only | **$50–$500 auction price** | Instant | **Run in parallel.** Yields 100% gross margin domains when lucky. Escapes the cold-outreach grind completely. |
 
 **Key takeaway.** The only channels with CAC below **$500/domain** are (a) waitlist-backed demand-pull, (b) domain-broker concierge, and (c) referral — and (a) and (c) require us to already have users and owners, which we don't at day 0. Cold outreach (letter, LinkedIn) clears at **$300–$1,500/domain**, which is expensive but survivable given an owner LTV of $3,600+ over 24 months (at $150/mo × 40% × 24).
 
@@ -339,6 +344,18 @@ Estimates are first-principles; ranges reflect the uncertainty across holder typ
 - **Disclosure discipline.** Renter churn from surprise domain-recalls kills the platform's trust. Sale-escape only works if it is surfaced clearly at signup, insured with a credible migration process, and capped to a minority of live inventory (proposed: ≤ 30% of live domains can be sale-escapable).
 
 **Expected conversion:** 3–8% on contacted dead-tail inventory, *conditional on the sale-escape clause clearing legal review in W5*. Potentially unlocks **10–25 additional Y1 domains** on top of the Dormant + Resigned pipeline, at lower per-domain acquisition cost (bulk discount) — but introduces a new operational cost center (migration reserve) and a new kill criterion (K-W2-8, sale-escape abuse rate).
+#### (v) Sentimental Dormant Holders (The "Digital Legacy" Play)
+
+**Why this is hard.** For owners heavily emotionally attached to their family name, the commercial pitch ("make $150/mo from strangers") feels cheap or insulting.
+
+**Playbook.**
+- **Drop the commercial framing entirely.** Pitch them on becoming the "Digital Patriarch/Matriarch" of their namespace. 
+- **The Pitch:** "You hold the digital home for the global 'O'Brien' diaspora. We want to help you open the doors to your wider family securely, at zero cost to you, with you holding the master keys."
+- **Charitable routing:** Offer an operational switch where their 40% payout is automatically routed to a registered 501(c)(3) charity of their choice. They get the tax write-off and the legacy; we get the inventory.
+- **Expected conversion:** Plausibly lifts the 3-8% Dormant Holder rate by capturing the wealthy/altruistic slice that ignores financial pitches.
+
+**Verdict.** **Test in exp-1.** A/B test this messaging against the standard "$1,800/year passive income" pitch to see which yields higher responses from individual dormant holders.
+
 
 **Verdict.** **PURSUE IN PARALLEL WITH EXP-1**, gated by two conditions: (a) W5 Legal & Ops signs off on the sale-escape clause as enforceable and not adverse-selection-prone, and (b) at least one large portfolio holder engages substantively during the 90-day window. If either fails, this segment collapses back to "ignore" and we re-anchor on the Dormant + Resigned pool only.
 
@@ -450,6 +467,8 @@ Added to `_kill_criteria.md` as W2 entries.
 | K-W2-6 | Legal-review cost per signed domain | **> $300** amortized → lease template is too complex; SIMPLIFY or absorb via subsidy, re-evaluate at exp-1 close | 90-day gate |
 | K-W2-7 | Owner payout realized vs. promised in Y1 | Realized < **50% of quoted range ($1,500–2,500/yr)** for first 10 owners → referral channel dies; renegotiate rev share or subsidize floor | Month 12 |
 | K-W2-8 | Sale-escape clause invocations (Rev-1) — portfolio owners triggering the 180-day recall clause | **> 2 per 100 domain-years of live sale-escapable inventory** → clause is being used as a flip accelerator, not a safety valve; SUSPEND new sale-escape contracts and migrate at-risk renters to sale-free inventory | Rolling, from first sale-escape contract |
+| K-W2-9 | OSINT Bounty effective CAC (Rev-2) | Realized cost per signed domain **> $1,200** (bounty payout + internal verification overhead) over any rolling 6-month window → SUSPEND bounty channel; re-tune prize structure or retire | Continuous after launch |
+| K-W2-10 | Drop-catching auction yield (Rev-2) | Average winning auction price **> $750/domain** *or* fewer than **3 successful captures per quarter** on top-500 surnames once budget is live → SUSPEND drop-catching budget; redirect capex | Quarterly |
 
 ---
 
@@ -465,7 +484,9 @@ Ranked fallbacks if §2h-exp-1 kills the cold-outreach thesis:
 
 **(iv) Abandon the marketplace model entirely.** If (i) is uneconomic and (ii)/(iii) do not materialize, the business thesis dies at W2. This is the honest outcome under the Pessimistic scenario.
 
-**Recommendation if exp-1 fails:** Go to (i). Raise a seed round scoped specifically to inventory acquisition, or execute a smaller-capex version (3–5 premium domains) as a proof of concept. Do not attempt (ii) or (iii) without additional validation.
+**(v) Fractional / Syndicate Buyouts (Rev-2).** Crowdfund the outright purchase of a single high-demand surname domain at the squatter's asking price (e.g., $250k for `johnson.com`), funded by ~500 lifetime-membership pre-sales at $500 each. The platform/co-op then owns the domain outright; rug-pull risk and the 60/40 revenue split both vanish on that domain. *Pros:* directly defeats the squatter's flip anchor; eliminates rug-pull on a flagship inventory item; converts a capex barrier into a crowd-funded one. *Cons:* likely a securities offering under U.S. law depending on structure (SEC review required); demands concentrated waitlist demand on a single specific surname before launch; lifetime pricing breaks the recurring-revenue LTV model and complicates economics. **Phase-2 experiment, not a Y1 fallback.** Tracked as A-W2-16; gated on W5 legal review before any pre-sale outreach.
+
+**Recommendation if exp-1 fails:** Go to (i). Raise a seed round scoped specifically to inventory acquisition, or execute a smaller-capex version (3–5 premium domains) as a proof of concept. Do not attempt (ii) or (iii) without additional validation. Option (v) is a strategic optionality item — not a primary fallback path.
 
 ---
 
@@ -534,7 +555,7 @@ Jurisdictional edge cases in owner estates, especially where the domain is held 
 - **Acquisition strategy (LOCKED):** Founder-led concierge cold outreach (letter + LinkedIn + WHOIS email) in months 0–6. Demand-pull / waitlist-backed outreach from month 6. No paid marketing on the supply side. Registrar partnerships parked for Year 2.
 - **Listing policy (LOCKED):** `.com` only; top-500 US surnames; age ≥ 5 years; clean RBL; no celebrity/politically-charged surnames; reserved platform local-parts per §2c; owner-reserved local-parts (up to 20); no adult/firearms/cannabis/gambling.
 - **Owner incentive model (LOCKED):** 60/40 platform/owner split (provisional, stress-test in W3). $50/mo revenue floor for first 12 months. $100–$250 signing bonus (exp-1 A/B test). 10% rolling reserve for first 180 days. Auto-renewing 1-year term with 90-day termination rights.
-- **Supply kill criteria (LOCKED):** K-W2-1 through K-W2-7 as §2j; mirrored into `_kill_criteria.md`.
+- **Supply kill criteria (LOCKED):** K-W2-1 through K-W2-10 as §2j (Rev-2 added K-W2-9 for OSINT Bounty CAC ceiling and K-W2-10 for drop-catching auction yield); mirrored into `_kill_criteria.md`.
 - **Go/no-go on supply viability (LOCKED):** **CONDITIONAL PROCEED.** Supply is the tightest risk. Commit to the 90-day exp-1 experiment (§2h-exp-1); treat its outcome as the actual go/no-go. Under expected-value planning the Realistic scenario misses the W1 K7 kill threshold — we are proceeding on the hope that exp-1 validates the Optimistic or high-Realistic band, not on any stronger basis. Fallback to §2k-(i) "platform owns inventory" is pre-declared if exp-1 fails.
 
 ---

@@ -35,6 +35,8 @@ Numeric thresholds that end the project cleanly, or force a pivot, rather than a
 | K-W2-6 | Legal-review cost amortized per signed domain | > $300/domain → SIMPLIFY lease template or absorb via subsidy; re-evaluate at exp-1 close | SIMPLIFY / SUBSIDIZE | Exp-1 legal spend log | W2 / W5 |
 | K-W2-7 | Realized owner Y1 payout vs. quoted $1,500–$2,500 range (first 10 owners) | Realized < 50% of quoted low end → referral channel dies; PIVOT rev share or extend floor subsidy | PIVOT | First 10 owner cohort | W2 / W3 |
 | K-W2-8 | Sale-escape clause invocation rate on Rev-1 Long-Tail Portfolio contracts | > 2 per 100 domain-years of live sale-escapable inventory → SUSPEND new sale-escape contracts, migrate at-risk renters | SUSPEND / MIGRATE | Portfolio contract tracking | W2 / W5 |
+| K-W2-9 | OSINT Bounty effective CAC per signed domain (Rev-2: payout + verification overhead, trailing 6 months) | > $1,200/domain → SUSPEND bounty channel; re-tune prize structure or retire | SUSPEND | Bounty payment ledger + verification labor log | W2 |
+| K-W2-10 | Drop-catching auction yield (Rev-2) | Average winning price > $750/domain *or* < 3 successful captures per quarter on top-500 surnames once budget is live → SUSPEND drop-catching capex; redirect to ops | SUSPEND / REDIRECT | Quarterly auction log + capex drawdown | W2 / W3 |
 
 ---
 
