@@ -30,7 +30,7 @@ Living list of hypotheses across workshops. Each row carries a status (`open` / 
 
 | ID | Assumption | Status | Evidence / Pointer | Owner (Workshop) |
 |---|---|---|---|---|
-| A-pre-1 | Forwarding-only is the safest architecture candidate. | open (refined) | `04_deliverability_workshop.md`. Re-validated compatible with Surname-Match ICP in W1 §2c. W2 added K-W2-4 kill: if > 40% of owner refusals cite architecture, re-open W4. | W4 |
+| A-pre-1 | Forwarding-only is the safest architecture candidate. | **conditionally locked (W4 Rev-2.1)** | `04_deliverability_workshop.md`. Re-validated compatible with Surname-Match ICP in W1 §2c. Rev-2 §1 keeps it. W4 Rev-2.1 (2026-04-27) downgrades from "locked" to "conditionally locked" pending: (i) Gate 0 send-as deliverability proof against Gmail/Outlook/Yahoo/Apple/M365 (A-W4-6), (ii) Mailgun/Gmail/Stripe Connect AUP confirmation in writing (now an MVP launch blocker, not a long-term risk), (iii) K-W2-4 — re-open if > 40% of owner refusals cite architecture. | W4 |
 | A-pre-2 | Platform dependencies (Gmail send-as, Mailgun AUP, Stripe Connect) remain policy-compatible. | open | `04_deliverability_workshop.md` flags this as a standing risk. | W6 |
 | A-pre-3 | Revenue-share default of 50/50 is the right starting point. | **killed** | Challenged in W1 §2f. New hypothesis: 60/40 platform favor. | W1 → W3 |
 
@@ -80,6 +80,18 @@ Living list of hypotheses across workshops. Each row carries a status (`open` / 
 
 ---
 
+## Workshop 4 — Deliverability
+
+| ID | Assumption | Status | Evidence / Pointer | Owner (Workshop) |
+|---|---|---|---|---|
+| A-W4-1 | ID verification at signup (Stripe Identity / Persona / Veriff, ~$1.00–$1.50/signup) raises identity-acquisition cost enough that 50-account abuse rings on a single domain become uneconomical at Rev-2 pricing. | open | W4 §2.5.2 + Rev-2 §8.3. Measurable via duplicate-identity audit on first 100 paid signups; coupled to A-Rev2-9. | W4 / Rev-2 |
+| A-W4-2 | Standard-tier 200/day and Premium-tier 500/day **forwarding throughput limits** (platform-mediated forwarding, not Gmail send-as outbound) accommodate ≥ 95% of legitimate identity-email use without false-positive Tier 1 pauses. | open | W4 §Forwarding Throughput Limits (Rev-2.1 scope clarification). Concierge MVP cohort first probe; live cohort confirms once 100+ paid signups exist. K-W4-2a measures the false-positive rate. | W4 |
+| A-W4-3 | Daily RBL monitoring (SpamHaus / SORBS / Barracuda) provides ≥ 24h lead time between first listing and catastrophic deliverability collapse, sufficient to pause forwarding and notify domain owner before broad recipient-side impact. | open | W4 §2 monitoring flow + Rev-2 §8.4. Measurable only with live incidents; relies on industry priors until then. | W4 / W6 |
+| A-W4-4 | The 3-slot-per-ID-per-domain cap (with 20% surcharge on slots 2+) is acceptable to ≥ 90% of legitimate compound-slot renters. Family / household sharing of IDs is < 5% of intake (low collusion noise). | open | W4 §2.5.1. Measurable from first 100 paid signups; flag if intake patterns show >10% multi-slot per ID. | W4 |
+| A-W4-5 | Annual forwarding-destination re-verification (renter must re-confirm Gmail destination once per year) catches ≥ 80% of compromised destinations with renter-acceptable friction (i.e., re-verification completion rate ≥ 90%). | open | W4 Red Team Vector 2 mitigation. Measurable from first 12-month cohort; concierge MVP can probe friction earlier. | W4 |
+| A-W4-6 | Consumer Gmail send-as on a non-Google `.com` domain (with our SPF + DKIM + DMARC records) reaches inbox at Gmail, Outlook, Yahoo, Apple Mail, and Microsoft 365 with no "via gmail.com" sender mismatch and no DMARC quarantine/reject in aggregate reports. | **launch-blocking — open** | W4 Rev-2.1 Gate 0. Rubber-duck pass (2026-04-27) flagged that all of W4 + W3 + the Surname-Match ICP rest on this assumption being technically true at consumer-Gmail send-as fidelity. Empirical proof task to run before code build commences. **Failing this kills A-pre-1 and reopens W3 economics.** Coupled to K-W4-4. | W4 / pre-MVP technical proof |
+| A-W4-7 | Mailgun forwarding reputation can be sufficiently isolated (per-domain subaccounts, per-cohort sending pools, or quarantine on incident) such that renter-induced reputation contamination on one rented domain does not cascade to delivery degradation on adjacent domains at >1.5× background rate. | **launch-blocking — open** | W4 Rev-2.1 §2.6. Mailgun account topology determination is a pre-launch blocker. If Mailgun does not support adequate isolation on our plan tier, mitigation cost lands in W7 risk reserve. Coupled to K-W4-5. | W4 / W6 |
+
 ---
 
 ## Rev-2 — Pricing & Namespace (2026-05-06)
@@ -102,4 +114,4 @@ Supersedes selected W1/W3 assumptions as noted. See `docs/08_pricing_namespace_r
 
 ---
 
-*Last updated: Rev-2 close (2026-05-06). Pricing & namespace reopened: two-tier Premium $25 / Standard $9, 50 renters/domain, blended ARPU $11, capital $245k central. W1 A7 superseded by A-Rev2-3; W2 A-W2-7 tightened via A-Rev2-5; K-W3-1/2/3 revised in `_kill_criteria.md`.*
+*Last updated: W4 Rev-2.1 rubber-duck pass (2026-04-27) — A-pre-1 downgraded from "locked" to "conditionally locked"; A-W4-2 scope-clarified to "forwarding throughput limit"; added A-W4-6 (Gate 0 send-as deliverability proof, launch-blocking) and A-W4-7 (Mailgun forwarding-reputation isolation, launch-blocking). Prior baseline: W4 Rev-2 alignment (2026-04-26) added A-W4-1 through A-W4-5. Earlier baseline: Rev-2 close (2026-05-06). Pricing & namespace: two-tier Premium $25 / Standard $9, 50 renters/domain, blended ARPU $11, capital $245k central. W1 A7 superseded by A-Rev2-3; W2 A-W2-7 tightened via A-Rev2-5; K-W3-1/2/3 revised in `_kill_criteria.md`.*
