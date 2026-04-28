@@ -1,8 +1,8 @@
 # Continuity Workshop: Rug-Pull Protection, Escrow, Renter Migration & Regulatory Posture
 
-**Date:** 2026-04-27 (v0 initial draft); **Rev-1 amendments 2026-04-27** (same day, in §9 below)
+**Date:** 2026-04-27 (v0 initial draft); **Rev-1 amendments 2026-04-27** (same day, §9); **Rev-1 rubber-duck findings 2026-04-27** (same day, §10)
 **Facilitator Input:** Legal & Operations Expert (lead), Trust & Safety Architect, Marketplace Economics Analyst, Domain Owner / Supply Advocate
-**Status:** **Rev-1 — conditionally locked pending external counsel sign-off, insurance binder, registrar-partner technical confirmation, and W7 capital reconciliation.** Rev-1 (§9 below) supersedes specific v0 design decisions in response to rubber-duck findings B1–B5 and M1–M8 (§8). Where v0 and Rev-1 conflict, **Rev-1 controls.** Sections of v0 superseded by Rev-1 are tagged inline with `→ SUPERSEDED BY §9.X`. v0 content is preserved for traceability. Reserve numerics from v0 §3.1 are downgraded to PLACEHOLDER pending W7 reconciliation.
+**Status:** **Rev-1 — controlling layer; Rev-2 rework PENDING.** Rev-1 (§9) supersedes specific v0 design decisions in response to rubber-duck findings B1–B5 and M1–M8 (§8). A second rubber-duck pass on Rev-1 itself returned **MAJOR-REWORK** (5 new blockers + 12 mediums recorded in §10), most importantly B5-Rev1 (an inter-workshop conflict with W4 forwarding-only). Where v0 and Rev-1 conflict, **Rev-1 controls** until Rev-2 supersedes it. Sections of v0 superseded by Rev-1 are tagged inline with `→ SUPERSEDED BY §9.X`. v0 content is preserved for traceability. Reserve numerics from v0 §3.1 remain PLACEHOLDER pending W7 reconciliation.
 
 > ### Scope inherited from upstream workshops
 >
@@ -709,3 +709,90 @@ Budgeted as **$50k pre-launch line item** with 10% contingency. Feeds W7 capital
 ---
 
 *End of W5 Rev-1 — 2026-04-27. Next: rubber-duck pass on Rev-1 (recommended) before opening W6 Red Team.*
+
+---
+
+## §10. Rev-1 Rubber-Duck Findings (2026-04-27, same-day pass)
+
+A second independent rubber-duck pass was run on §9 Rev-1 itself (not on v0 §1–§7). Verdict: **MAJOR-REWORK** — Rev-1 introduced new structural issues, including one that reintroduces a W4 architecture conflict that Rev-2.1 had previously resolved.
+
+These findings are recorded here for traceability and will be addressed in **W5 Rev-2** (planned next, before opening W6). Rev-1 remains the controlling layer until Rev-2 is committed.
+
+### §10.1 Blocking findings (Rev-1B)
+
+**B1-Rev1. §9.1 Bonded Premium dual-control registrar architecture may not exist as a market product.**
+§9.1 names Cloudflare Registrar / Porkbun / Hover as candidates for "dual-control delegation" where neither owner nor platform can transfer out unilaterally. That control pattern is closer to institutional / corporate-domain custody than ordinary registrar delegation. Cloudflare Registrar in particular is famously austere. Option (b) — owner-retained registrar with registry-lock + transfer-lock + auto-renew — relies on owner-controlled settings the owner can revoke at any time; quarterly attestation creates a long blind window.
+*Failure mode:* Bonded Premium is marketed as control-backed but may be only contract-promise-backed.
+*Rev-2 action:* Replace candidate-registrar list with a hard pre-design gate — identify at least one provider with written support for dual-approval transfer-out, non-owner revocation resistance, platform-visible audit logs, emergency renewal rights, and a defined response SLA. If none exists, downgrade Bonded Premium to "damages-backed only" and re-run W2 economics. Detection cadence must be daily / event-driven, not quarterly, if relied upon for continuity.
+
+**B2-Rev1. §9.1 apex DNS authority is under-specified.**
+"Under platform DNS authority" can mean (a) owner keeps nameservers and publishes platform-required records (no real platform authority — contractual + monitoring only), or (b) owner delegates the entire apex zone to platform NS (platform controls website, subdomains, DNSSEC posture — likely commercially unacceptable to many valuable-domain owners, especially Bonded Premium candidates). Rev-1 picks neither.
+*Failure mode:* Either Bonded Premium signing rate collapses (model b) or the control claim is illusory (model a).
+*Rev-2 action:* Define explicit Model A / Model B / Model C (DNS provider with scoped API/RBAC) and state which is required at each tier. Add owner-side protections (read-only access, change-approval workflow for non-mail records, web/DNS SLA, DNSSEC policy, liability allocation). Re-test W2 conversion with the chosen burden disclosed.
+
+**B3-Rev1. §9.3 sale-escape and Bonded Premium liquidated damages are not deterrent at high domain values.**
+Run the math: 50 renters × $1,000 = $50k; at $1M sale, 5% above $25k ≈ $48.75k → renter-count limb dominates at $50k. At $5M sale the $250k cap binds (~5% of value, less than typical broker friction). Bonded Premium liquidated damages = max(24mo gross, $50k) — at 50 renters × $11 ARPU × 24mo = ~$13.2k, real number is $50k. For valuable surname domains, $50k–$250k is cost-of-doing-business, not a deterrent. A flipper with a $1M+ offer can rationally breach.
+*Failure mode:* B3 is not actually solved; Bonded Premium is vulnerable to economically rational breach.
+*Rev-2 action:* Reframe §9.3 as "mitigates but does not prevent" high-value exits unless stronger control exists. Model deterrence by domain value bands, not renter count alone. Consider uncapped percentage limb or sliding cap tied to appraised price. Require larger pre-funded bond / standby letter / escrow for Bonded Premium domains above a value threshold. Add seasoning-abuse test (recent listing history, broker outreach, parking pages, domain-investor behavior excluded from Bonded Premium and possibly Standard).
+
+**B4-Rev1. §9.3 enforceability depends on legally uncertain domain-security mechanisms.**
+Domains occupy a legally messy space: some courts treat them as contract rights with the registrar, not Article 9 property. UCC-1 perfection on a domain may simply not be available in many jurisdictions. Sale-proceeds escrow assumes a cooperative broker / closing channel — private sales, membership-interest sales, or off-platform consideration bypass it.
+*Failure mode:* If counsel says no enforceable security interest exists, sale-escape loses force against third-party buyers; A-W5-2 / LB-W5-9 are structurally determinative, not cleanup.
+*Rev-2 action:* Elevate LB-W5-9 from "confirm mechanism" to a binary architecture gate. Counsel memo must address: domain as collateral / general intangible, perfection feasibility, remedies against purchaser, escrow enforceability, private-sale avoidance. Add fallback (registrar custody, third-party domain escrow, opaque-LLC restriction, platform-owned inventory pivot) for the case where enforcement fails.
+
+**B5-Rev1. §9.4 / §9.5 reintroduce a W4 architecture conflict — platform cannot throttle Gmail send-as outbound.**
+§9.5 says Tier-1 safe-mode "throttles outbound forwarding to 50 messages/day"; §9.4 references a "monthly outbound-volume cap" enforced at the bridge layer. But W4 Rev-2.1/2.2 is explicit: renter outbound goes through Gmail send-as and is **not** platform-controlled. The platform controls inbound forwarding to the renter, not outbound sent by the renter. Throttling forwarding rate-limits the alleged victim's mail receipt while doing little to stop the alleged outbound abuser.
+*Failure mode:* The dispute and indemnification design relies on a control that does not exist. Wrong lever.
+*Rev-2 action:* Rewrite §9.4 / §9.5 with W4-correct terminology. Replace "outbound cap" with actual enforceable controls — freeze forwarding-destination changes, suspend alias verification token / DNS records, pause inbound forwarding only where appropriate, terminate slot on confirmed abuse, require re-verification / manual review. Re-run indemnification and insurance assumptions without assuming preventive outbound rate control. **This finding reintroduces an issue Rev-2.1 of W4 had previously corrected — an inter-workshop consistency check is needed.**
+
+### §10.2 Medium findings
+
+**M1-Rev1 (§9.4).** "Commercial use HARD BANNED" is not operationalizable as written. Edge cases: receiving payroll/benefits, sending an invoice once, LinkedIn use, side-hustle correspondence. Either narrow to "no bulk marketing / no transactional mail for a business service / no customer-support automation" with examples, or accept enforcement-discretion litigation risk.
+
+**M2-Rev1 (§9.5, §9.6, A-W5-4).** Stripe / banking primitives may not exist as described. "Stripe Connect platform balance under owner-attributed segregated ledger entry" is not escrow; held charges are dispute-exposed. FBO bank accounts require specific banking-product support not all startup-friendly banks offer. "Restricted cash" is an accounting classification, not bankruptcy remoteness. Reserve / bond / MTL claims may be overstated. Need written Stripe + bank confirmations before W7.
+
+**M3-Rev1 (§9.2 ↔ §9.4 internal inconsistency).** §9.2 declares all reserve numerics PLACEHOLDER pending W7. §9.4 simultaneously locks $25k incident / $100k aggregate caps — creating a de facto minimum capital exposure W7 hasn't validated. Treat the §9.4 caps as provisional until W7. Add explicit W7 floor model (cap exposure + deductible buffer + legal-defense floor + migration reserve + dispute reserve + insurance premium). Define A-W5-9 action if need exceeds +20% tolerance (terminate / raise / lower caps / narrow MVP / inventory pivot).
+
+**M4-Rev1 (§9.3, §9.7).** Anti-avoidance of membership-interest / beneficial-ownership transfers is contractually written but not technically monitorable — FinCEN BOI is not externally accessible; private LLC transfers are unobservable. Treat as contractual-only. Require: annual + event-driven owner certifications, operating-agreement / trust restrictions prohibiting transfer without platform consent, beneficial-owner disclosure at onboarding + annual refresh, audit rights, payout suspension for non-certification.
+
+**M5-Rev1 (§9.7).** "Assessed value > $25k" bright line is undefined. Estibot, GoDaddy appraisal, broker opinion, and platform internal valuation diverge by order-of-magnitude. Define valuation method (independent broker opinion / latest bona fide offer / platform schedule by surname rank / acquisition cost / highest-of), or shift the entity requirement to be tier/rank-based, not dollar-appraisal-based.
+
+**M6-Rev1 (§9.8).** Levenshtein-distance-2 surname rule is the wrong equivalence test. `johnson.com` → `johnston.com` (L=2) qualifies; `jones.com` → `jameson.com` (L=4) does not, despite arguably weaker phonetic similarity. Replace with composite: phonetic match (Soundex/Metaphone) + surname-frequency / cultural-origin match + manual approval + renter refusal right retained. Clarify whether equivalent destination must be platform-owned reserved inventory or can depend on another private owner (the latter reintroduces owner-side dependency).
+
+**M7-Rev1 (§9.10 ↔ W1/W2).** US-only MVP creates validation contamination unless W1 LP filters traffic and W2 outreach is updated. Add US billing/residency disclosure to LP before deposit; segment LP metrics by US eligibility; update W2 outreach to exclude non-US owners without US-entity / W-9 capability; reconcile prior Spanish-language outreach with US-only eligibility.
+
+**M8-Rev1 (§9.11).** Freeze triggers (K-W5-3a/3b/3c) lack exit criteria — review owner, deadline, required evidence, possible outcomes, conditions to resume, and whether the 30%→20% cap reduction is temporary or permanent. Without exit criteria, one early incident in a 5–10 domain MVP can freeze onboarding indefinitely (accidental shutdown path).
+
+**M9-Rev1 (§9.12).** Launch blockers need critical-path sequencing, not a flat checklist. Dependencies: registrar feasibility → DNS/control model → sale-enforcement legal memo → Stripe/banking confirmation → insurance quote → reserve model → W7 go/no-go. Mark "must-resolve-first" blockers (those that can invalidate downstream spend).
+
+**M10-Rev1 (§9.13).** Counsel budget bands likely understate novel-question work — registrar/ICANN $2–4k, sale-proceeds escrow / UCC-1 $1–3k, reserve / bankruptcy-remoteness $2–4k, payments / MSB $4–8k. These are opinion-like analyses, not template edits. Obtain fixed-fee or capped quotes before treating $50k as a planning number; add a $75–100k high-case to W7 sensitivity; sequence must-resolve-first opinions before full ToS / lease drafting.
+
+**M11-Rev1 (§9.4, A-W5-3).** Insurance deductible contingency missing. If the broker quote returns $50k or $100k deductible (common at startup scale for Cyber + Tech E&O), or excludes customer intentional acts / spam / phishing / contractual indemnity, the §9.4 cap-deductible alignment breaks. Add explicit branches feeding into W7 reserve and go/no-go.
+
+**M12-Rev1 (§9.14).** "Successful W6 pass without finding a structural exploit" is unrealistic — W6's purpose is to find exploits. Replace with severity-based closure: no unresolved Blocking findings, all High findings either mitigated or explicitly accepted by W7, reserve/capital impact modeled, customer-facing disclosures updated.
+
+### §10.3 Minor findings
+
+- **§9.3 encumbrance trigger may be self-referential.** If the platform itself files a UCC-1, that arguably triggers the "any encumbrance, lien, security interest, or pledge" Change-of-Control clause. Add carve-out: "other than platform-approved or platform-held security interests created under this lease."
+- **§9.5 owner bond dispute risk not modeled.** A $500 card/ACH bond can be charged back; platform may lose the bond and still owe adjudicator/renter compensation. Model bond collectability as uncertain unless collected by ACH with explicit authorization, offset against owner payouts, or held through a real escrow/payment flow.
+- **§9.6 "FBO without formal trust" may overstate insolvency protection.** Renter-facing language should remain conservative ("asserted as customer-benefit funds") until bank/counsel confirmation exists; do not imply bankruptcy remoteness pre-confirmation.
+
+### §10.4 Verdict and Rev-2 plan
+
+**Verdict: MAJOR-REWORK.** Rev-1 introduced 5 new blockers and 12 mediums. The most important new issue is **B5-Rev1**, which re-introduces a W4 architecture conflict (the platform cannot throttle Gmail send-as outbound) — this is not just a W5 issue but an inter-workshop consistency failure that the Rev-1 pass should have caught.
+
+**Rev-2 work plan (next, before W6 opens):**
+1. Re-architect §9.5 (and dependent §9.4 outbound-volume references) using W4-correct controls — freeze send-as config / suspend alias / pause inbound / terminate slot. Inter-workshop consistency check.
+2. Convert §9.1 from candidate-registrar list to a binary architecture gate; specify Model A/B/C for apex DNS authority; choose detection cadence consistent with control reliance.
+3. Reframe §9.3 deterrence claims by domain-value band; add seasoning-abuse exclusions; size Bonded Premium liquidated damages to value, not renter count.
+4. Promote LB-W5-9 to a binary gate with named fallbacks if domain-security perfection is unavailable.
+5. Mark §9.4 caps "provisional pending W7"; build the W7 reserve floor model in §9.2.
+6. Operationalize commercial-use AUP with examples / non-examples (M1-Rev1).
+7. Update remaining mediums (Stripe/bank primitives wording; LLC-monitoring as contractual; valuation method; phonetic distance; W1/W2 US-only reconciliation; freeze exit criteria; launch-blocker critical path; counsel budget high-case; insurance deductible branches; §9.14 closure rewording).
+8. Update assumption register and shutdown criteria for any Rev-2 changes.
+
+**Status:** Rev-1 remains the controlling layer until Rev-2 is committed. Findings recorded above are the input set for Rev-2.
+
+---
+
+*End of W5 §10 (Rev-1 Rubber-Duck Findings) — 2026-04-27.*
