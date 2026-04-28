@@ -1,10 +1,10 @@
 # Deliverability Workshop: Abuse Prevention & MVP Email Architecture
 
-**Date:** 2026-04-27 (Rev-2.1 — rubber-duck pass) — Original draft 2026-04-21; Rev-2 alignment 2026-04-26
+**Date:** 2026-04-27 (Rev-2.2 — sending-bridge dependency) — Rev-2.1 rubber-duck pass 2026-04-27; Rev-2 alignment 2026-04-26; Original draft 2026-04-21
 **Facilitator Input:** Trust & Safety Architect, Legal & Operations Expert, Red Teamer
 **Status:** **Conditionally locked.** Forwarding-only is the MVP architecture for design purposes. Six hard gates must clear before MVP build, including a pre-build technical proof on Gmail send-as deliverability and a cost-stack reconciliation against Rev-2.
 
-> ### ✅ Rev-2 Alignment Notice (2026-04-26) — Updated 2026-04-27 (Rev-2.1)
+> ### ✅ Rev-2 Alignment Notice (2026-04-26) — Updated 2026-04-27 (Rev-2.1) — Updated 2026-04-27 (Rev-2.2)
 >
 > This workshop has been revised against the now-locked offer:
 >
@@ -32,6 +32,15 @@
 > - **Added leading-indicator monitoring spec** alongside daily RBL polling (RBL listing is often *the* event, not a 24h-early warning). Added Mailgun complaints, DMARC aggregate reports, inbound spike anomalies.
 > - **Split K-W4-2** into Tier 1 false-positive rate (UX risk), confirmed forwarding-abuse rate, and send-as complaint rate. Replaced K-W4-3 false-pass measure with observable post-hoc proxies (chargeback rate, near-duplicate identity rate, confirmed abuse among ID-verified cohort).
 > - **Re-classified some W5/W6 hand-offs as MVP launch blockers.** Provider AUP compatibility (Gmail, Mailgun, Stripe Connect), indemnification structure for blacklist + impersonation harms, and owner-pull-during-incident protocol are blocking, not deferrable.
+>
+> **What changed in Rev-2.2 (sending-bridge dependency, 2026-04-27):**
+>
+> - **Recognized that consumer "send-as via external SMTP" is essentially a Gmail-only feature.** Outlook.com / Hotmail deprecated external-SMTP "send-as" / "Connected accounts" for consumer users in 2023; aliases are restricted to Microsoft-owned domains. Yahoo Mail does not support external-SMTP send-as on free or paid tiers; aliases are restricted to Yahoo-owned domains. Apple iCloud Mail and Microsoft 365 support custom domains only when the *user's own account/tenant* owns the domain — not workable on a shared/rented domain. Fastmail supports external send-as; Proton requires domain ownership. **Net effect:** to *reply as* `bill@johnson.com`, a non-Gmail user today must either (a) open a free Gmail account as a sending bridge or (b) use Fastmail. The "use your existing mailbox" pitch is functionally Gmail-native for the bulk of US consumers.
+> - **Inbound forwarding is unaffected** — any mailbox can *receive* forwarded mail. The dependency is on outbound *sending* identity.
+> - **Added §2.7 Sending-Bridge Dependency** (new section). Documents the cross-provider compatibility matrix, the Gmail-bridge fallback path, the "first-party send endpoint" question (which would re-open W4's outbound abuse model), and the mitigations.
+> - **Added A-W4-8** (assumption register, launch-blocking): ≥ 70% of the Surname-Match ICP either uses Gmail today or will accept a free-Gmail sending bridge as a setup step. Coupled to **K-W4-6** in the kill-criteria ledger (LP-measured Gmail penetration in the ICP, plus concierge-MVP bridge-acceptance rate).
+> - **W1 LP-test instrumentation update** (cross-cutting, doc 05 §2g experiment 2): the email-capture form now asks "what's your primary email today?" with provider buckets, so we measure ICP Gmail penetration directly rather than relying on US-population priors. Free instrumentation; meaningful data even at low LP volume.
+> - **Gate 0 scope clarified.** Gate 0 already tests *recipient-side* deliverability across major providers (Gmail/Outlook/Yahoo/Apple/M365 as receivers). Rev-2.2 adds a sibling concern about *sender-side* bridge availability, which is a market/ICP question, not a deliverability question — handled in §2.7, not folded into Gate 0.
 >
 > **Assumptions still standing post-Rev-2.1 (formalized in `_assumption_register.md` as A-W4-1 through A-W4-7):**
 >
@@ -300,6 +309,63 @@ Rev-2 admits compound local-parts (`john.paul@`, `mary.anne@`, `j.smith@`, `jp.s
 
 - A single domain cannot exceed 0.1% Mailgun complaint rate over a rolling 7-day window without triggering forwarding pause (regardless of which renter caused it). This protects Mailgun reputation at the cost of a small false-pause rate on legitimate renters during shared incidents — accepted trade-off.
 - Mailgun account-level reputation incidents (provider warning, throttling, or AUP citation) are a **K-W4-5 kill criterion** (see `_kill_criteria.md`). More than one such incident in a rolling 12-month window kills the architecture.
+
+---
+
+## §2.7 Sending-Bridge Dependency (Rev-2.2 — new section)
+
+**Why this section exists:** the W1 demand pitch and the W4 forwarding-only architecture both rest on an unstated premise — that the renter's *existing* mailbox can be configured to send *as* `bill@johnson.com`. Through Rev-2.1 this was implicitly assumed to be true at any major consumer mail provider. The 2026-04-27 review surfaced that this is now functionally a **Gmail-only capability** for consumer users. The architecture still works, but the addressable market and the onboarding flow are narrower than W1 §2c assumed.
+
+### 2.7.1 Cross-Provider Compatibility Matrix (consumer market, 2026)
+
+| Provider | Send `bill@johnson.com` via external SMTP from this mailbox? | Architectural impact |
+|---|---|---|
+| **Gmail (consumer)** | ✅ Yes — "Send mail as" with custom SMTP. The reference path. | Full forwarding-only flow as designed. |
+| **Google Workspace** | ✅ Yes — same plus admin-managed aliases. | Full flow; rare in our consumer ICP. |
+| **Outlook.com / Hotmail / Live** | ❌ No (effectively). External-SMTP "Connected accounts" deprecated for consumer users in 2023; aliases restricted to Microsoft-owned domains. | Renter must use a sending bridge. |
+| **Microsoft 365 (business)** | ⚠️ Only if the user's own tenant adds the domain — impossible on a shared/rented domain. | Out of scope for our shared-domain marketplace. |
+| **Yahoo Mail (free or paid)** | ❌ No. External-SMTP send-as not supported; aliases restricted to Yahoo-owned domains. | Renter must use a sending bridge. |
+| **Apple iCloud Mail (iCloud+)** | ⚠️ Custom-domain support requires the user to own and add the domain to their own account. | Out of scope for shared-domain marketplace. |
+| **Fastmail** | ✅ Yes — supports external send-as on arbitrary domains. | Full flow; small consumer share. |
+| **Proton Mail** | ⚠️ Custom-domain support requires user-owned domain. | Out of scope for shared-domain marketplace. |
+
+US consumer-mail share order of magnitude (rough, public estimates): Gmail ~55–65%, Outlook/Hotmail ~10–15%, Yahoo ~10%, Apple Mail ~5–10%, other ~5%. **The send-as bridge is natively available to roughly the Gmail slice.**
+
+### 2.7.2 Implications
+
+1. **Inbound forwarding is universal; outbound sending is not.** Any renter on any mailbox can *receive* mail forwarded to `bill@johnson.com`. The dependency is on the *reply / outbound* path having sender identity = `bill@johnson.com`.
+2. **Without a sending bridge, non-Gmail/non-Fastmail renters cannot reply as their vanity address.** They can read forwarded mail, but their replies will go out as `bill@hotmail.com` (or Yahoo, etc.) — defeating the entire identity premise of the product.
+3. **The product offer must be honest about this** before payment. Quietly assuming non-Gmail users will figure it out post-purchase is a churn and chargeback driver.
+4. **The Surname-Match ICP may skew Gmail-heavy** vs. the general US population (early adopters of "claim your name" energy are likely Gmail-native and tech-comfortable), but this is a hypothesis, not data. W1 LP-test instrumentation now measures it directly.
+
+### 2.7.3 Architectural Options
+
+| Option | Description | Cost | Re-opens W4? |
+|---|---|---|---|
+| **A. Gmail-bridge fallback (locked default).** | For non-Gmail renters: setup flow guides creation of a free Gmail account configured as the send-as relay (renter still receives in their preferred mailbox via forwarding; replies route through the bridge Gmail). Renter keeps using their primary mailbox for everyday reading; the bridge is a sending-only account. | Onboarding-friction cost only. No infra cost. | No. |
+| **B. First-party webmail / IMAP send endpoint.** | Platform runs a minimal "compose & send" webmail or IMAP+SMTP submission endpoint that accepts authenticated renter sends and relays via Mailgun/SES. | Real outbound SMTP from platform infrastructure. **Re-opens the entire W4 outbound abuse model** (rate limiting, content scanning, abuse-driven domain reputation isolation, the Mailgun/SES AUP question for outbound-as-renter). | **Yes — fully.** Deferred to post-MVP at earliest. |
+| **C. Fastmail partnership / referral.** | For non-Gmail renters who refuse the Gmail bridge, refer to Fastmail with an affiliate-style flow. | Affiliate cost; renter pays Fastmail $5/mo. | No. |
+| **D. Accept market narrowing.** | Quietly serve only Gmail-native users; let Outlook/Yahoo loyalists self-deselect. | Demand-side TAM contraction. | No (but kills A-W4-8 if rejection rate is high). |
+
+**Locked default (Rev-2.2):** Option A (Gmail bridge) for non-Gmail renters, with Option C (Fastmail referral) as an escape hatch for renters who explicitly refuse the bridge. Option B is **not** in scope for MVP. Option D is the implicit failure mode if A-W4-8 fails.
+
+### 2.7.4 MVP onboarding flow (Rev-2.2 — locked)
+
+1. After payment + ID verification, ask: "Where do you want to read mail addressed to `bill@johnson.com`?"
+2. If Gmail: standard send-as setup wizard (existing W4 flow).
+3. If anything else: branch into "Set up your sending bridge" — short explainer ("most non-Gmail providers don't let you send as a custom address; we'll set up a free Gmail account that acts as your reply relay; you'll keep reading in your preferred mailbox") + step-by-step Gmail account creation + send-as configuration.
+4. Track bridge-acceptance rate vs. drop-off-at-bridge-step rate as a K-W4-6 input.
+
+### 2.7.5 Required validation (concierge MVP + W1 LP)
+
+- **W1 LP test (instrumentation update):** add "what's your primary email today?" to the email-capture form (Gmail / Outlook-Hotmail / Yahoo / Apple iCloud / Other / Prefer not to say). Measures ICP Gmail penetration directly.
+- **Concierge MVP bridge-acceptance:** for the first cohort of non-Gmail signups, measure the share that completes the Gmail-bridge setup vs. drops off at the bridge step.
+- **Bridge-friction support load:** track Tier-1 support tickets generated by the bridge-setup step as a fraction of all onboarding tickets.
+
+### 2.7.6 Coupled Ledger Entries
+
+- **A-W4-8** (assumption register): ≥ 70% of the Surname-Match ICP either uses Gmail today or will accept a free-Gmail sending bridge as a setup step. Launch-blocking for the demand side; if Outlook/Yahoo loyalists won't accept the bridge, the Surname-Match TAM contracts toward the Gmail slice.
+- **K-W4-6** (kill criteria): combined LP-measured ICP Gmail penetration + concierge-MVP bridge-acceptance rate. If LP-measured ICP non-Gmail share is high *and* concierge bridge-acceptance is low, the marketplace is functionally Gmail-only and ICP must narrow to match.
 
 ---
 
@@ -664,6 +730,7 @@ The 2.0 FTE figure used in the 2026-04-26 draft was the *ceiling* number, not th
 3. **Indemnification posture for blacklist + impersonation harms** (W4/W5 joint). Without a settled stance — platform absorbs vs. push to renters via ToS vs. insurance reserve — the same-domain impersonation residual (6–10% of complaint incidents) is unbounded liability. Must lock pre-launch.
 4. **Owner-pull-during-active-incident protocol** (W4/W5 joint). If RBL pause triggers and the owner wants to withdraw the domain mid-incident, the renter-protection minimum (notice, migration, refund) must be specified before the first paying cohort.
 5. **Owner-vs-renter abuse arbitration** (W4/W5 joint). What if a domain owner claims a renter is abusive but forwarding logs show otherwise? Who arbitrates? The complaint adjudication path must be specified before live operations.
+6. **Sending-bridge dependency validation** (Rev-2.2, §2.7). LP-measured ICP Gmail penetration + concierge-MVP bridge-acceptance rate must clear K-W4-6 thresholds before broad launch. The Gmail-bridge fallback flow (§2.7.4) must be built and friction-measured before the first non-Gmail paid signup.
 
 **W5 Continuity follow-ups (deferrable beyond MVP launch):**
 1. **Payment cliff:** What happens if a domain owner stops paying renewal fees? Can the platform intervene at the registrar level?
@@ -682,9 +749,9 @@ The 2.0 FTE figure used in the 2026-04-26 draft was the *ceiling* number, not th
 
 ---
 
-## Conditionally Locked Verdict (Rev-2.1, 2026-04-27)
+## Conditionally Locked Verdict (Rev-2.1, 2026-04-27) — Updated Rev-2.2 (2026-04-27)
 
-🟡 **Forwarding-only is the locked MVP architecture for design purposes. The Rev-2 compound tier is *conditionally* locked pending resolution of six pre-build hard gates and five MVP launch blockers.** Downgraded from "Locked" (2026-04-26) after rubber-duck pass surfaced unproven technical assumptions and unbudgeted launch dependencies.
+🟡 **Forwarding-only is the locked MVP architecture for design purposes. The Rev-2 compound tier is *conditionally* locked pending resolution of six pre-build hard gates and six MVP launch blockers.** Downgraded from "Locked" (2026-04-26) after rubber-duck pass surfaced unproven technical assumptions and unbudgeted launch dependencies. Rev-2.2 added the sending-bridge dependency (§2.7) as a sixth launch blocker and an additional kill criterion (K-W4-6).
 
 **What this workshop establishes (locked at the design level):**
 1. Domain reputation can be protected architecturally under forwarding-only at 50 renters/domain — *conditional on Gate 0 send-as deliverability proof*.
@@ -700,12 +767,13 @@ The 2.0 FTE figure used in the 2026-04-26 draft was the *ceiling* number, not th
 4. Non-waivable $25 onboarding fee.
 5. Compound-slot policy caps (3/ID/domain, 20% surcharge on slots 2+, canonicalization spec per §2.5.3, display-name ToS, send-as alias suspension on confirmed abuse).
 
-**Five MVP launch blockers** (in addition to the six gates; must resolve before code build commences):
+**Six MVP launch blockers** (in addition to the six gates; must resolve before code build commences):
 1. Provider AUP confirmations in writing (Mailgun, Gmail, Stripe Connect).
 2. Indemnification posture for blacklist + impersonation harms (W4/W5 joint).
 3. Owner-pull-during-active-incident protocol (W4/W5 joint).
 4. Owner-vs-renter abuse arbitration path (W4/W5 joint).
 5. Mailgun account topology decision (per-domain subaccounts / per-cohort pools availability) per §2.6.
+6. **Sending-bridge dependency** (Rev-2.2 §2.7): LP-measured ICP Gmail penetration + concierge-MVP bridge-acceptance must clear K-W4-6; Gmail-bridge fallback flow (§2.7.4) built and friction-measured before first non-Gmail paid signup.
 
 **Cost-stack reconciliation note (Rev-2.1):**
 - Y1 launch staffing (0.5 FTE) fits Rev-2 §2i fixed opex with a $15–25k uplift.
@@ -726,6 +794,7 @@ The 2.0 FTE figure used in the 2026-04-26 draft was the *ceiling* number, not th
 - **K-W4-3**: ID-verification post-hoc abuse rate (observable proxies: chargeback rate by IDV vendor, near-duplicate identity rate, confirmed abuse rate among ID-verified cohort).
 - **K-W4-4** (new, Rev-2.1): Send-as deliverability proof (pass/fail at Gate 0).
 - **K-W4-5** (new, Rev-2.1): Mailgun account-level reputation incidents (provider warning, throttling, AUP citation; >1 in rolling 12-month window kills architecture).
+- **K-W4-6** (new, Rev-2.2): Sending-bridge dependency — combined LP-measured ICP Gmail penetration + concierge-MVP Gmail-bridge acceptance rate. Threshold spec in `_kill_criteria.md`.
 
 **Next Steps:**
 1. **Gate 0 technical-proof task** — run empirical send-as deliverability test against Gmail/Outlook/Yahoo/Apple/M365. Required before A-pre-1 fully locks.
