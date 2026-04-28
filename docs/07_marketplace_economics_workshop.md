@@ -143,6 +143,89 @@ At the Realistic W2 central blended CAC of **$600/domain** and 20-renter steady 
 
 ---
 
+### 2b-bis. Owned-Inventory P&L (Rev-2 — Drop-Catching Channel)
+
+W2 Rev-2 added programmatic drop-catching as a parallel supply channel: automated bidding on expiring auctions for top-5,000 surnames at $50–$500/domain. A drop-caught domain is **owned outright** by the platform, not leased from a third-party owner. This creates a second inventory class with materially different unit economics that must be tracked separately from the leased pool that drives the §2b base case.
+
+#### Per-renter contribution on owned inventory
+
+| Line | Leased domain (§2b base case) | Owned (drop-caught) | Delta |
+|---|---:|---:|---:|
+| Blended monthly ARPU | $16.50 | $16.50 | — |
+| Owner payout (40%) | $6.60 | **$0** | +$6.60 |
+| Stripe + Connect + chargeback | $1.53 | $1.53 | — |
+| Forwarding infra | $0.25 | $0.25 | — |
+| Support labor | $1.50 | $1.50 | — |
+| Abuse / fraud reserve | $0.50 | $0.50 | — |
+| Sale-escape migration reserve | $0.08 | **$0** | +$0.08 |
+| Allocated fixed infra | $0.50 | $0.50 | — |
+| Domain-renewal allocation (capex/holding) | — | **$0.04** | -$0.04 |
+| **Net platform contribution / renter / mo (pre-CAC)** | **$5.54** | **~$12.14** | **+$6.60** |
+| Plus amortized onboarding | +$0.48 | +$0.48 | — |
+| **Total net / renter / mo** | **$6.00** | **~$12.62** | **+$6.62** |
+
+Domain-renewal allocation: $12/yr ÷ ~25 renter-months/yr/domain at 12-renter liquidity ≈ $0.04/renter/mo. Trivial.
+
+#### Per-domain P&L (owned, at four densities)
+
+| Metric | 3 renters | 8 renters | 12 renters | 20 renters |
+|---|---:|---:|---:|---:|
+| Net platform contribution / mo (pre-CAC) | $36.42 | $97.12 | $145.68 | $242.80 |
+| Net / yr | $437 | $1,165 | $1,748 | $2,914 |
+| Months to recoup $300 capture price | 8.2 | 3.1 | 2.1 | 1.2 |
+| Months to recoup $500 capture price | 13.7 | 5.1 | 3.4 | 2.1 |
+
+**Observation.** Even at the 8-renter break-even floor, an owned domain captured for ≤ $500 pays back its capex within ~5 months of steady operation. This is materially faster payback than the equivalent leased domain (cohort payback ~14 months from signing per §2b ramp curve). The economics on owned inventory are unambiguously better *per domain* — but yield is rate-limited by auction luck, not by budget, so this channel cannot carry a Y1 plan; it is a margin-improver layered on top of the leased-marketplace base case.
+
+#### Capex line for §2h capital plan
+
+Add a **drop-catching inventory budget** of **$10k Y1 / $15k Y2 / $20k Y3** to the capital plan (§2h). At an average winning price of $300, $10k clears ~33 captured domains at the Y1 ceiling. K-W2-10 caps average price at $750 and demands ≥ 3 captures/quarter, so a Y1 budget shortfall (no usable yield at the assumed price band) trips the kill criterion before exhausting the budget. Capex is *separate* from CAC — do **not** roll drop-catching capex into the K-W3-1 CAC ceiling; it lives on its own line.
+
+#### Floor subsidy and 60/40 split do not apply
+
+Owned inventory is exempt from:
+- The Y1 $50/mo owner-floor subsidy (no owner exists)
+- The 40% revenue share (no owner exists)
+- The sale-escape migration reserve (no owner can recall)
+- A-W3-7 (owner-floor subsidy retirement schedule)
+
+This means owned inventory is *more profitable per renter* AND *less risky per domain* than leased inventory. The catch is that it cannot scale on demand — at most 3–10 domains/quarter realistically clear from drop-catch auctions at acceptable prices, vs. 1–3 leased domains/month from concierge. Drop-catching is a tail wind on margin, not a substitute for the marketplace.
+
+#### Limits and risks
+
+1. **Renter perception risk.** A renter on `johnson.com` does not see the difference between owned and leased — the "claim your name" pitch holds. But our internal comms must avoid hybrid framing to renters; from the renter's standpoint there is one product.
+2. **Concentration risk.** If owned inventory grows to > 30% of live domains, the "marketplace" framing becomes a fiction and we are running a hybrid mail.com-with-surnames model. That has implications for fundraising narrative and W7 positioning. Soft cap at 25% of live inventory for Y1–Y2.
+3. **Tax/accounting.** Domain capex is an intangible asset; consult W5 on capitalization vs. expense treatment. The above analysis treats acquisition price as fully expensed in month of capture for simplicity; capitalization would shift the timing but not the cumulative economics.
+4. **Auction price drift.** The $50–$500 band is assumed; if dropcatch competition prices common surnames out of the band, this channel becomes unviable. K-W2-10 catches this.
+
+**Net:** owned inventory adds margin and reduces rug-pull on a slice of the portfolio, but it does not change the W3 central case (Realistic ~18 leased Y1 domains, $220k capital plan). The headline numbers stay; the addendum just creates a +$5–$15k capex line, a +$6.60/renter/mo upside on a small slice of the renter base, and two new kill criteria (K-W2-10 here, K-W2-9 for the bounty channel).
+
+---
+
+### 2b-tris. Other Rev-2 Channel Economic Notes
+
+- **OSINT Bounty (W2 A-W2-12).** $1,000 success-fee bounty per signed domain. Sits inside the existing $1,500 paid-channel ceiling in §2c owner-CAC table; no LTV/CAC recompute required. Modeled as a substitute for cold LinkedIn ($900) and paid-social ($1,500) on a per-domain basis. Risk-capped (no payout until signed); fraud risk tracked separately under K-W2-9.
+- **Parking Platform Integration (W2 A-W2-13).** Y2-only; not in Y1 plan. If it lands as advertised ($100–$300 effective CAC), it is the *cheapest* leased-supply channel and would shift the W3 blended-CAC central case downward — probably reducing the $220k capital requirement by 10–15%. Hold this as an upside lever, not a baseline assumption.
+- **"Digital Legacy" pitch variant (W2 A-W2-15).** A/B variant of Dormant Holder outreach; no incremental cost; potential conversion lift folds into the existing 3–8% Dormant Holder rate. No W3 recompute.
+- **Fractional / Syndicate Buyouts (W2 A-W2-16).** *Excluded from W3 economics.* The structure (lifetime memberships at $500 vs. monthly recurring) is incompatible with the W3 LTV model. Treat as a separate strategic experiment with its own P&L if Phase-2 ever activates it.
+
+---
+
+### 2b-quat. Channel Summary After Rev-2
+
+| Channel | Status | Y1 plan | Effect on W3 central case |
+|---|---|---|---|
+| Concierge cold outreach (Dormant + Resigned + Hispanic-language) | Primary | Yes — W2 exp-1 | Baseline — no change |
+| Demand-pull / waitlist | Primary | Yes — month 6+ | Baseline — no change |
+| Bulk dead-tail portfolio (sale-escape) | Secondary | Yes — gated by W5 | Baseline — no change |
+| OSINT Bounty | Tertiary | Yes — parallel test | None (CAC fits envelope) |
+| "Digital Legacy" pitch variant | Sub-channel | Yes — A/B inside exp-1 | None |
+| Drop-catching (owned inventory) | Margin-improver | Yes — $10k capex budget | +$5.54/renter/mo on captured slice; capex line added |
+| Parking platform integration | Y2 only | No | Y2 upside — not modeled |
+| Fractional / syndicate | Phase-2 only | No | Excluded |
+
+---
+
 ### 2c. LTV Model
 
 #### Renter LTV
@@ -509,6 +592,8 @@ Pessimistic never reaches liquidity; cumulative –$280k at month 36 with no pos
 2. **Phase 1 ($40k, months 3–9):** Small angel check or founder-extended cash. Funds MVP build + first 8 domains + concierge renter onboarding. Gate: W1 LP K1/K2 + W2 exp-1 K-W2-1 cleared.
 3. **Phase 2 ($220k, months 9–30):** Angel round of $225–300k at a $2–4M pre-money. Funds the ramp through max drawdown (month 27–30). Gate: first 100 paying renters at unit economics tracking K-W3-1 and K-W3-2.
 4. **Phase 3 (optional seed, month 30+):** Only if growth-mode is warranted and early cohorts are clearing K-W3-4 retention (≥ 65%). Seed of $750k–$1.5M for scale, not survival.
+
+**Drop-catching capex line (Rev-2, A-W3-13).** A separate **$10k Y1 / $15k Y2 / $20k Y3 inventory budget** for programmatic drop-catching of expiring surname domains. This sits *outside* the $275k operating capital plan because (a) it is capex, not opex; (b) it is rate-limited by auction yield, so unspent budget rolls forward without affecting runway; and (c) it is gated by K-W2-10 — if average winning price exceeds $750 or fewer than 3 captures land per quarter, the budget is suspended and capital reverts to general ops. Total Rev-2 capex envelope: **$45k across Y1–Y3**, additive to the $275k operating capital plan. Funded out of Phase 1 / Phase 2 angel proceeds.
 
 **Maximum-drawdown month: month 27–30 at –$195k (Lean plan) to –$307k (Growth plan).** Phase-2 round must close by month 18 to avoid a cash cliff.
 

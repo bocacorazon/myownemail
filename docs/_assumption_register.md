@@ -76,6 +76,7 @@ Living list of hypotheses across workshops. Each row carries a status (`open` / 
 | A-W3-10 | Stripe Chargeback Protection (or equivalent) is available for this product class, holding effective chargeback-plus-dispute cost to $0.50/renter/mo. | open | W3 §2a; W5 to confirm. | W5 |
 | A-W3-11 | Cumulative contribution crosses positive month 42–48 (Realistic Lean) / 39–41 (Optimistic); Pessimistic never crosses and dies at W2 exp-1 gate. | open (derived) | W3 §2h. Tracked from monthly financials post-launch. | W3 / W7 |
 | A-W3-12 | 60/40 take rate is the minimum defensible split; 50/50 fails LTV/CAC, 70/30 fails supply. Tiered splits not required for MVP. | open (design decision, not empirically tested) | W3 §2d. Gated by W2 exp-1 owner feedback on split. | W3 / W2 |
+| A-W3-13 | Drop-catching (W2 A-W2-14, Rev-2) introduces a second inventory class with no owner payout; per-renter platform contribution rises from $5.54/mo to ~$12.14/mo on owned domains. A Y1 capex budget of $10k clears 20–30 captured domains at average ≤ $500 and is recouped within ≤ 24 months at 12-renter liquidity. | open | W3 §2b-bis (Rev-2 addendum). Coupled to A-W2-14. Capex line added to §2h capital plan. | W3 / W2 |
 
 ---
 
