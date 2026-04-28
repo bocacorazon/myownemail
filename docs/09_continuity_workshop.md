@@ -1,8 +1,8 @@
 # Continuity Workshop: Rug-Pull Protection, Escrow, Renter Migration & Regulatory Posture
 
-**Date:** 2026-04-27 (v0 initial draft — **major rework pending** per rubber-duck findings)
+**Date:** 2026-04-27 (v0 initial draft); **Rev-1 amendments 2026-04-27** (same day, in §9 below)
 **Facilitator Input:** Legal & Operations Expert (lead), Trust & Safety Architect, Marketplace Economics Analyst, Domain Owner / Supply Advocate
-**Status:** **v0 Draft — not locked. Major rework pending.** A rubber-duck pass on this draft (2026-04-27) returned a MAJOR-REWORK verdict with 5 blocking findings and 8 medium findings. See §8 below. None of the design decisions in this document should be treated as locked until Rev-1 addresses the blockers (registrar/DNS control enforceability, reserve reconciliation against Rev-2 economics, sale-escape enforcement mechanism, indemnification/insurance reality check, and dispute-default safe-mode redesign).
+**Status:** **Rev-1 — conditionally locked pending external counsel sign-off, insurance binder, registrar-partner technical confirmation, and W7 capital reconciliation.** Rev-1 (§9 below) supersedes specific v0 design decisions in response to rubber-duck findings B1–B5 and M1–M8 (§8). Where v0 and Rev-1 conflict, **Rev-1 controls.** Sections of v0 superseded by Rev-1 are tagged inline with `→ SUPERSEDED BY §9.X`. v0 content is preserved for traceability. Reserve numerics from v0 §3.1 are downgraded to PLACEHOLDER pending W7 reconciliation.
 
 > ### Scope inherited from upstream workshops
 >
@@ -40,26 +40,26 @@ The forwarding-only architecture from W4 reduces *deliverability* fragility (no 
 
 ### Locked Design Decisions (this workshop)
 
-1. **Registrar-control model: "Owner-controlled, platform-monitored."** The platform never holds the registrar account. The owner retains full domain control at their existing registrar. Platform integrates via DNS records (SPF, DKIM, DMARC, MX) which the owner authorizes us to manage via NS delegation **on a subdomain** (`mail.<domain>`) where structurally possible, or via direct record management with TOTP-protected change auditing. Inherited and reaffirmed from W2 §2j.
-2. **Two-tier domain product.** **Premium tier** (sale-free, full-term commitment, signed lease, no sale-escape) and **Standard / Sale-Escapable tier** (sale-escape clause permitted, must be disclosed at signup, capped at ≤ 30% of live inventory). Renter pricing reflects the risk asymmetry (Premium-tier renter slots can carry a small premium; documented under K-W5-1 below).
-3. **Renter Protection Guarantee (RPG)** — locked, customer-facing:
+1. **Registrar-control model: "Owner-controlled, platform-monitored."** `→ SUPERSEDED BY §9.1 (B1).` The platform never holds the registrar account. The owner retains full domain control at their existing registrar. Platform integrates via DNS records (SPF, DKIM, DMARC, MX) which the owner authorizes us to manage via NS delegation **on a subdomain** (`mail.<domain>`) where structurally possible, or via direct record management with TOTP-protected change auditing. Inherited and reaffirmed from W2 §2j.
+2. **Two-tier domain product.** `→ Premium "sale-free" relabeled "Bonded Premium" by §9.1 (B1) and §9.3 (B3).` **Premium tier** (sale-free, full-term commitment, signed lease, no sale-escape) and **Standard / Sale-Escapable tier** (sale-escape clause permitted, must be disclosed at signup, capped at ≤ 30% of live inventory). Renter pricing reflects the risk asymmetry (Premium-tier renter slots can carry a small premium; documented under K-W5-1 below).
+3. **Renter Protection Guarantee (RPG)** — locked, customer-facing: `→ Migration-credit framing revised by §9.9 (minor cleanup).`
    - **Minimum 90-day notice** before any planned domain withdrawal (sale, lease termination, owner exit). For Premium-tier renters: 180 days.
    - **Migration assistance** — concierge-grade handoff to an alternate surname domain (where available) or to a personal-domain setup ($15 ICANN registration credit + free 3-month forwarding-only setup).
    - **Pro-rated refund** for unused term, plus a **migration credit** (1 month of equivalent service) if migration is involuntary.
    - **No surprise withdrawals** outside RBL-pause emergencies — emergency carve-out spelled out separately.
-4. **Reserve & escrow architecture** (locked at the structural level; numeric tuning open):
+4. **Reserve & escrow architecture** (locked at the structural level; **all numerics PLACEHOLDER pending W7 — see §9.2 (B2) and §9.6 (M2)**):
    - **10% rolling reserve** on all owner payouts for first 180 days of each domain's listing (per W2 §2j item 7).
    - **Migration reserve fund** at platform level: $X/renter-month accrued into a segregated account, sized per K-W5-2.
    - **Stripe Connect Custom** flow holds funds 7 days minimum before payout to owner; chargeback window extends this to 90 days for first-time owners.
    - **Indemnification reserve** (W4 hand-off): platform-side reserve to absorb impersonation/blacklist harms below stated caps; above caps, push-to-renter via ToS + insurance backstop.
-5. **Regulatory posture (locked positioning, external counsel sign-off pending):**
+5. **Regulatory posture (locked positioning, external counsel sign-off pending):** `→ SUPERSEDED BY §9.10 (M8): MVP is US-only; EU/UK regimes deferred to post-MVP.`
    - US Delaware C-corp; California operating presence assumed for tax-nexus modeling.
    - **CAN-SPAM:** platform is a "sender" or "service provider" for inbound forwarding only; renters are senders for outbound (their Gmail/bridge). ToS push to renters; no commercial-bulk-mail authorization on rented addresses (enforced by §2.1 below).
    - **GDPR / UK GDPR / CCPA / CPRA / state privacy:** platform is data controller for renter PII (name, payment, ID-verification result), data processor for inbound forwarded mail content (transit only, no storage beyond logs). DPA template required per renter; SCCs for non-EU platform processing.
    - **Trademark / impersonation:** mandatory ID-verification at signup (W4 §2.5.2) provides a registrant-of-record identity; same-domain impersonation (W4 §2.5.3) handled by canonicalization spec + complaint takedown (UDRP-adjacent process internally; no claim of UDRP equivalence).
    - **Money transmitter:** the 60/40 split processed via Stripe Connect Custom is structured to keep us **outside money-transmitter classification** in all 50 states (Stripe is the regulated party, we are a marketplace facilitator). External counsel must confirm.
    - **Sales tax / marketplace tax:** SaaS-tax states (currently ~20+) require collection on rentals at the renter side; platform collects and remits. Owner side is service-revenue (1099-K threshold tracking).
-6. **Sale-escape clause structure (W2 hand-off, locked at design level pending counsel):** owner option to pull on bona-fide third-party offer ≥ floor price, 180-day notice, owner pays exit fee into migration reserve, capped at ≤ 30% of live inventory (per W2 §2k(iv)). External counsel must confirm enforceability and absence of UCC Article 2 / consumer-product implications.
+6. **Sale-escape clause structure (W2 hand-off, locked at design level pending counsel):** `→ SUPERSEDED BY §9.3 (B3): adds anti-avoidance, 12-mo seasoning, greatest-of exit fee, sale-proceeds escrow.` owner option to pull on bona-fide third-party offer ≥ floor price, 180-day notice, owner pays exit fee into migration reserve, capped at ≤ 30% of live inventory (per W2 §2k(iv)). External counsel must confirm enforceability and absence of UCC Article 2 / consumer-product implications.
 
 ### MVP Launch Blockers (must clear before code build commences)
 
@@ -111,6 +111,8 @@ Six structurally distinct ways a domain disappears or becomes unusable for rente
 
 ### 1.2 Master Owner Lease Agreement — Anatomy
 
+`→ SUPERSEDED IN PART BY §9.1 (B1) on registrar/DNS control, §9.3 (B3) on sale-escape enforcement, §9.7 (M7) on succession operations.`
+
 Building on W2 §2j. Ten key clauses, each with the open question for external counsel:
 
 1. **Grant of license.** Owner grants platform a non-exclusive, revocable license to operate forwarding addresses on the domain at specified subdomain(s) and to manage SPF/DKIM/DMARC/MX records as documented in Schedule A. *Counsel question: revocability scope vs. renter contract enforcement.*
@@ -150,6 +152,8 @@ Five customer-facing locks (with the legal mechanism that backs each):
 
 ### 1.5 Owner-vs-Renter Abuse Arbitration (W4 launch blocker resolution)
 
+`→ SUPERSEDED BY §9.5 (B5): graduated safe-mode replaces binary "active vs. suspended"; bond mechanics specified; symmetrical renter deposit added.`
+
 **Scenario:** A domain owner asserts that a renter's behavior is damaging their domain (commercial mail blowback, disputed content, third-party complaints to the owner directly). Forwarding logs may or may not corroborate.
 
 **Resolution path (locked):**
@@ -162,6 +166,8 @@ Five customer-facing locks (with the legal mechanism that backs each):
 **Defaults during dispute:** the renter's slot remains active unless ops has independent abuse evidence. We do not pause renters on owner accusation alone — that creates a structural eviction lever for owners who decide they don't like a renter.
 
 ### 1.6 Indemnification Architecture (W4 launch blocker resolution)
+
+`→ SUPERSEDED BY §9.4 (B4): per-incident cap raised to $25k (= insurance deductible); annual aggregate raised to $100k; renter-insurance requirement removed for consumer renters; commercial use HARD BANNED via AUP.`
 
 **Three-layer cap structure (locked):**
 
@@ -229,6 +235,8 @@ If a renter is in active Tier-2/3 abuse review *and* the domain owner pulls (§1
 
 ### 2.3 Sister-domain pool dual-use
 
+`→ SUPERSEDED BY §9.8 (M4): pool is split into three explicit functions (revenue inventory / reserved migration inventory / emergency non-equivalent path) with target spare capacity defined.`
+
 The drop-catching pool (W2 A-W2-14, W3 §2b-bis) doubles as the migration-destination pool. Implication: when a renter on `johnson.com` migrates to platform-owned `johnston.com`, the platform is the *owner* of the migration target — there is no second owner relationship to manage, no sale-escape risk, and a 100% gross-margin renter slot. Net effect: migration cost decreases for migrations into owned inventory; the owned-inventory class becomes structurally important not just for economics (W3) but for continuity insurance.
 
 ---
@@ -236,6 +244,8 @@ The drop-catching pool (W2 A-W2-14, W3 §2b-bis) doubles as the migration-destin
 ## §3. Marketplace Economics Analyst — Secondary Review
 
 ### 3.1 Reserve Sizing
+
+`→ ALL NUMERICS SUPERSEDED BY §9.2 (B2) and §9.6 (M2): downgraded to PLACEHOLDER pending W7 EV-loss model and reserve-architecture appendix. The $74–82k/yr aggregate figure is a v0 estimate, not a Rev-1 commitment.`
 
 Three reserves to size:
 
@@ -357,37 +367,37 @@ W6 should also revisit W4 §2.7 sending-bridge dependency (Rev-2.2) for a Gmail-
 
 ## §8. Rubber-duck findings (2026-04-27) — Rev-1 work queue
 
-A rubber-duck critique was run against this v0 draft on 2026-04-27. **Verdict: MAJOR-REWORK.** The findings below must be resolved (or explicitly accepted-with-rationale) in a Rev-1 pass before any element of W5 is treated as locked. None of the v0 design decisions above survive into W6/W7 as locked until that pass completes.
+A rubber-duck critique was run against this v0 draft on 2026-04-27. **Verdict: MAJOR-REWORK.** All B and M findings have been addressed in §9 below (Rev-1 amendments, same-day pass). Disposition status is annotated against each finding.
 
 ### §8.1 Blocking findings (must resolve in Rev-1)
 
-**B1. Registrar/DNS control model is not enforceable.** Lease clauses cannot stop an owner from changing nameservers, removing apex MX, transferring the domain, or letting it expire. Also a technical bug: the proposed `mail.<domain>` NS delegation does not give the platform control over `@domain.com` email (apex MX + apex DKIM/DMARC selectors required). Rev-1 must specify a real control architecture: registrar transfer-lock + registry lock, platform-visible auto-renew status, contractual platform-paid-renewal-with-recoupment right, apex-DNS authority sufficient for `@domain.com`, and for Premium either escrowed registrar access or downgrade "sale-free" → "enhanced notice + damages-backed best-efforts."
+**B1.** [**RESOLVED in §9.1.**] Registrar/DNS control model is not enforceable. Lease clauses cannot stop an owner from changing nameservers, removing apex MX, transferring the domain, or letting it expire. Also a technical bug: the proposed `mail.<domain>` NS delegation does not give the platform control over `@domain.com` email (apex MX + apex DKIM/DMARC selectors required). Rev-1 must specify a real control architecture: registrar transfer-lock + registry lock, platform-visible auto-renew status, contractual platform-paid-renewal-with-recoupment right, apex-DNS authority sufficient for `@domain.com`, and for Premium either escrowed registrar access or downgrade "sale-free" → "enhanced notice + damages-backed best-efforts."
 
-**B2. W5 reserve burden ($74–82k/yr at Y2 ceiling) likely breaks Rev-2 economics and is not reconciled.** Rev-2 central case is already tight (~$245k max drawdown, breakeven month 48–52). The v0 draft also confuses *annual expected loss* with *balance-sheet target reserve*, and may double-count Rev-2's existing abuse and sale-escape lines while under-accounting legal-defense cash needs. Rev-1 must (a) separate balance-sheet target vs. annual expected loss, (b) build per-incident-type EV loss model, (c) compute per-renter/month cost impact by tier, (d) update capital requirement under base + 1 major migration event + 1 indemnity claim hitting deductible, and (e) make an explicit pricing/share/inventory/capital decision. This work belongs in W7 reconciliation; until done, all reserve numbers in §3.1 are placeholders.
+**B2.** [**RESOLVED in §9.2 (deferred to W7 with placeholder downgrade).**] W5 reserve burden ($74–82k/yr at Y2 ceiling) likely breaks Rev-2 economics and is not reconciled.** Rev-2 central case is already tight (~$245k max drawdown, breakeven month 48–52). The v0 draft also confuses *annual expected loss* with *balance-sheet target reserve*, and may double-count Rev-2's existing abuse and sale-escape lines while under-accounting legal-defense cash needs. Rev-1 must (a) separate balance-sheet target vs. annual expected loss, (b) build per-incident-type EV loss model, (c) compute per-renter/month cost impact by tier, (d) update capital requirement under base + 1 major migration event + 1 indemnity claim hitting deductible, and (e) make an explicit pricing/share/inventory/capital decision. This work belongs in W7 reconciliation; until done, all reserve numbers in §3.1 are placeholders.
 
-**B3. Sale-escape and Premium "sale-free" are soft promises without enforcement.** No anti-avoidance against LLC-membership-interest sale; no seasoning period; exit fee is rounding error vs. high-value sales (50 renters × $500 = $25k, weak vs. six-figure flips); only $2.5–7.5k at early liquidity. RoFR was rejected without an alternative escrow/buyer-assumption mechanism. Rev-1 must add: (a) anti-avoidance clauses (asset sale, equity sale, change of control, beneficial-ownership transfer, registrar transfer, DNS transfer, encumbrances), (b) 12-month seasoning, (c) exit fee = greater-of {per-renter, months-of-gross-revenue, % of sale proceeds above floor}, (d) sale-proceeds escrow or broker closing instructions, (e) for Premium either registrar-level escrow or relabeling away from "sale-free."
+**B3.** [**RESOLVED in §9.3.**] Sale-escape and Premium "sale-free" are soft promises without enforcement.** No anti-avoidance against LLC-membership-interest sale; no seasoning period; exit fee is rounding error vs. high-value sales (50 renters × $500 = $25k, weak vs. six-figure flips); only $2.5–7.5k at early liquidity. RoFR was rejected without an alternative escrow/buyer-assumption mechanism. Rev-1 must add: (a) anti-avoidance clauses (asset sale, equity sale, change of control, beneficial-ownership transfer, registrar transfer, DNS transfer, encumbrances), (b) 12-month seasoning, (c) exit fee = greater-of {per-renter, months-of-gross-revenue, % of sale proceeds above floor}, (d) sale-proceeds escrow or broker closing instructions, (e) for Premium either registrar-level escrow or relabeling away from "sale-free."
 
-**B4. Indemnification/insurance structure relies on coverage and collectability that may not exist.** $5k incident cap sits *below* the modeled $25k insurance deductible, so insurance never responds to capped incidents. Cyber/Tech E&O policies typically exclude intentional acts of insureds' customers — exactly the spam/impersonation/phishing cases the platform claims to indemnify. Pushing above-cap losses to consumer renters via "renter's-insurance requirement" is unrealistic and uncollectible at the price point. Rev-1 must (a) get broker quotes covering email-abuse/spam/phishing exclusions, defense-costs treatment, contractual-indemnity coverage, (b) align platform caps with deductible reality (a $5k self-insured cap is *not* insurance-backed), (c) replace "renter's insurance requirement" with a realistic collectability model assuming consumer-renter recovery ≈ 0, (d) decide whether business/commercial use is fully banned (not merely excluded from indemnity). Insurance binder + coverage summary reviewed by counsel becomes a hard launch blocker.
+**B4.** [**RESOLVED in §9.4.**] Indemnification/insurance structure relies on coverage and collectability that may not exist.** $5k incident cap sits *below* the modeled $25k insurance deductible, so insurance never responds to capped incidents. Cyber/Tech E&O policies typically exclude intentional acts of insureds' customers — exactly the spam/impersonation/phishing cases the platform claims to indemnify. Pushing above-cap losses to consumer renters via "renter's-insurance requirement" is unrealistic and uncollectible at the price point. Rev-1 must (a) get broker quotes covering email-abuse/spam/phishing exclusions, defense-costs treatment, contractual-indemnity coverage, (b) align platform caps with deductible reality (a $5k self-insured cap is *not* insurance-backed), (c) replace "renter's insurance requirement" with a realistic collectability model assuming consumer-renter recovery ≈ 0, (d) decide whether business/commercial use is fully banned (not merely excluded from indemnity). Insurance binder + coverage summary reviewed by counsel becomes a hard launch blocker.
 
-**B5. Dispute default ("renter active unless independent evidence") creates a Gmail-send-as abuse window.** This conflicts with W4's already-reactive complaint-driven posture, and the $500 owner bond's procedural effect is not actually defined (does posting it pause the renter? accelerate review? buy adjudicator deposit?). Rev-1 must replace binary "active vs. suspended" with graduated safe-mode: (a) Tier-1 ambiguous owner complaint → throttle forwarding, freeze send-as setup changes, increase logging, 72h triage deadline (not 14 days); (b) define exactly what owner bond buys procedurally; (c) make bond symmetrical (renter contesting may post smaller deposit); (d) emergency exception for credible third-party complaint evidence.
+**B5.** [**RESOLVED in §9.5.**] Dispute default ("renter active unless independent evidence") creates a Gmail-send-as abuse window.** This conflicts with W4's already-reactive complaint-driven posture, and the $500 owner bond's procedural effect is not actually defined (does posting it pause the renter? accelerate review? buy adjudicator deposit?). Rev-1 must replace binary "active vs. suspended" with graduated safe-mode: (a) Tier-1 ambiguous owner complaint → throttle forwarding, freeze send-as setup changes, increase logging, 72h triage deadline (not 14 days); (b) define exactly what owner bond buys procedurally; (c) make bond symmetrical (renter contesting may post smaller deposit); (d) emergency exception for credible third-party complaint evidence.
 
 ### §8.2 Medium findings (resolve in Rev-1 or schedule into W6/W7)
 
-**M1. Stripe Connect / money-transmitter posture is conclusory.** Connect Custom + owner reserves + migration reserves + indemnification reserves + payout-timing discretion can look like funds control, not pure marketplace facilitation. Counsel memo + Stripe written confirmation required, covering merchant of record, payout-timing control, reserve-holding location, commingling, state-by-state treatment for NY/CA/TX/FL.
+**M1.** [**ACCEPTED into §9.6 + new launch blocker LB-W5-7 (counsel + Stripe written confirmation).**] Stripe Connect / money-transmitter posture is conclusory. Connect Custom + owner reserves + migration reserves + indemnification reserves + payout-timing discretion can look like funds control, not pure marketplace facilitation. Counsel memo + Stripe written confirmation required, covering merchant of record, payout-timing control, reserve-holding location, commingling, state-by-state treatment for NY/CA/TX/FL.
 
-**M2. Reserve commingling and bankruptcy-remoteness are not specified.** "Segregated account" is undefined — separate bank? trust? bankruptcy-remote restricted cash? operating-account ledger entry? Rev-1 needs a reserve architecture appendix covering insolvency priority, draw approvals, and whether owner rolling reserves are owner funds or platform funds.
+**M2.** [**RESOLVED in §9.6.**] Reserve commingling and bankruptcy-remoteness are not specified.** "Segregated account" is undefined — separate bank? trust? bankruptcy-remote restricted cash? operating-account ledger entry? Rev-1 needs a reserve architecture appendix covering insolvency priority, draw approvals, and whether owner rolling reserves are owner funds or platform funds.
 
-**M3. GDPR controller/processor split is likely oversimplified.** Forwarded email content contains third-party (sender) PII; spam filtering, abuse detection, quarantine, legal holds, complaint adjudication all involve platform determining purpose/means → controller activities, not processor. Privacy counsel must classify each data flow and decide whether EU/UK traffic is excluded from MVP.
+**M3.** [**RESOLVED by §9.10 (M8 cross-border decision = US-only MVP).**] GDPR controller/processor split is likely oversimplified. Forwarded email content contains third-party (sender) PII; spam filtering, abuse detection, quarantine, legal holds, complaint adjudication all involve platform determining purpose/means → controller activities, not processor. Privacy counsel must classify each data flow and decide whether EU/UK traffic is excluded from MVP.
 
-**M4. Sister-domain pool is overloaded** with four conflicting functions (revenue inventory, migration insurance, drop-catch experiment, displacement fallback). Separate "revenue owned inventory" / "reserved migration inventory (priced as insurance)" / "emergency non-equivalent migration path"; define target spare capacity and surname-distance rules; if no equivalent destination exists, RPG should say so plainly.
+**M4.** [**RESOLVED in §9.8.**] Sister-domain pool is overloaded with four conflicting functions (revenue inventory, migration insurance, drop-catch experiment, displacement fallback). Separate "revenue owned inventory" / "reserved migration inventory (priced as insurance)" / "emergency non-equivalent migration path"; define target spare capacity and surname-distance rules; if no equivalent destination exists, RPG should say so plainly.
 
-**M5. K-W5 thresholds are not actionable enough.** K-W5-3's 5/100-domain-yrs trigger waits for many customer failures before "architecture review" (a non-action). Add early absolute triggers: first owner-initiated rug-pull in first 12 months → freeze new Standard sale-escapable onboarding; any Premium owner attempted sale → suspend Premium claims; any rug-pull affecting >25 renters → immediate W7 reforecast. Replace "architecture review" with explicit actions (suspend supply, require registrar escrow, raise exit fees, reduce Standard cap, reprice reserves).
+**M5.** [**RESOLVED in §9.5 (graduated safe-mode) + §9.11 (kill-criteria absolute triggers K-W5-3a/3b/3c).**] K-W5 thresholds are not actionable enough. K-W5-3's 5/100-domain-yrs trigger waits for many customer failures before "architecture review" (a non-action). Add early absolute triggers: first owner-initiated rug-pull in first 12 months → freeze new Standard sale-escapable onboarding; any Premium owner attempted sale → suspend Premium claims; any rug-pull affecting >25 renters → immediate W7 reforecast. Replace "architecture review" with explicit actions (suspend supply, require registrar escrow, raise exit fees, reduce Standard cap, reprice reserves).
 
-**M6. $15–35k counsel budget is likely understated** and missing categories: privacy DPA/SCC package, payments/MSB specialist, tax/sales-tax/VAT, registrar/ICANN counsel, insurance coverage review, owner KYC/W-9/1099 workflow, probate/successor-contact playbook, foreign-owner exclusion-or-policy decision. Rev-1 must turn A-W5-1 into a quoted workplan with named counsel categories and hard budget bands; if quoted pre-build legal exceeds the envelope, that feeds W7 capital and go/no-go.
+**M6.** [**RESOLVED in §9.4 (insurance) + new launch blocker LB-W5-7 (counsel scope) + revised A-W5-1.**] Counsel budget is likely understated and missing categories: privacy DPA/SCC package, payments/MSB specialist, tax/sales-tax/VAT, registrar/ICANN counsel, insurance coverage review, owner KYC/W-9/1099 workflow, probate/successor-contact playbook, foreign-owner exclusion-or-policy decision. Rev-1 must turn A-W5-1 into a quoted workplan with named counsel categories and hard budget bands; if quoted pre-build legal exceeds the envelope, that feeds W7 capital and go/no-go.
 
-**M7. Owner death/incapacity plan is contractual not operational.** A lease clause does not guarantee registrar access after death (probate, locked accounts, expired payment cards, foreign jurisdictions). Rev-1: require successor contact at onboarding, auto-renew enabled and verified annually, platform emergency renewal right where registrar permits, consider LLC/trust ownership for high-value Premium domains, define 7/14/30-day estate-non-response escalation, exclude solo-owner foreign domains from MVP.
+**M7.** [**RESOLVED in §9.7.**] Owner death/incapacity plan is contractual not operational. A lease clause does not guarantee registrar access after death (probate, locked accounts, expired payment cards, foreign jurisdictions). Rev-1: require successor contact at onboarding, auto-renew enabled and verified annually, platform emergency renewal right where registrar permits, consider LLC/trust ownership for high-value Premium domains, define 7/14/30-day estate-non-response escalation, exclude solo-owner foreign domains from MVP.
 
-**M8. Cross-border owner/renter scope is inconsistent.** W2 explicitly recommended US owners + US renters only for MVP; W5 v0 analyzes GDPR/UK GDPR/SCCs/EU DSA as if EU traffic may exist. Rev-1 must make a hard MVP scope decision: Option A (US-only — block EU/UK signups, simplify W5) or Option B (international from day one — GDPR/DPA/SCC become launch blockers). Recommend Option A to align with W2.
+**M8.** [**RESOLVED in §9.10: Option A locked (US-only MVP).**] Cross-border owner/renter scope is inconsistent. W2 explicitly recommended US owners + US renters only for MVP; W5 v0 analyzes GDPR/UK GDPR/SCCs/EU DSA as if EU traffic may exist. Rev-1 must make a hard MVP scope decision: Option A (US-only — block EU/UK signups, simplify W5) or Option B (international from day one — GDPR/DPA/SCC become launch blockers). Recommend Option A to align with W2.
 
 ### §8.3 Minor findings (one-liners; can be deferred or rejected with rationale)
 
@@ -403,3 +413,299 @@ A rubber-duck critique was run against this v0 draft on 2026-04-27. **Verdict: M
 Rev-1 should consolidate B1–B5 + M1–M8 into a single revision pass. Suggested ordering: (1) registrar/DNS control architecture (B1) — feeds Premium/Standard product definition; (2) sale-enforcement mechanism (B3) — depends on B1; (3) reserve-and-economics reconciliation (B2 + M2) — feeds W7; (4) insurance reality check (B4 + M6) — depends on broker quotes; (5) dispute safe-mode (B5); (6) cross-border scope decision (M8) — gates GDPR/payment-regime depth (M1, M3); (7) operational ops items (M4, M5, M7); (8) minor cleanup. Rev-1 closure criterion: every B finding either resolved or explicitly downgraded with written rationale and accepted residual risk.
 
 ---
+
+## §9. Rev-1 Amendments (2026-04-27)
+
+This section is the authoritative Rev-1 design layer. Where v0 §1–§7 conflicts with §9, **§9 controls.** Each subsection resolves the correspondingly-numbered rubber-duck finding from §8. Status-of-section is recorded at the head of each subsection.
+
+### §9.1 Registrar/DNS control architecture (resolves B1)
+
+**Status: locked at design level pending registrar-partner technical confirmation (new launch blocker LB-W5-7).**
+
+The v0 "owner-controlled, platform-monitored" model is downgraded. Rev-1 splits control architecture by tier and adds enforceable operational controls:
+
+**Bonded Premium tier** (renamed from "Premium / sale-free"):
+- Owner option (a) — **registrar co-management**: owner transfers domain registration to a vetted platform-partner registrar (candidates: Cloudflare Registrar, Porkbun, Hover) where the owner remains beneficial owner but the registrar account has dual-control delegation (owner + platform). Platform cannot initiate transfer-out without owner; owner cannot initiate transfer-out without platform countersign during lease term.
+- Owner option (b) — **owner-retained registrar with hard controls**: owner keeps existing registrar but contractually grants (i) registry-lock + transfer-lock enabled and verified, (ii) auto-renew enabled with platform-funded backstop, (iii) platform-paid emergency renewal right with recoupment from owner payouts, (iv) read access (or scheduled WHOIS attestation) to confirm lock + renewal status quarterly.
+- Either option requires: apex MX, apex `_dmarc` TXT, and DKIM selectors at apex (e.g., `selector1._domainkey.<domain>`) under platform DNS authority. The v0 `mail.<domain>` NS-delegation model is technically insufficient for `@<domain>` email and is rejected.
+- "Sale-free" promise replaced with **"Bonded Premium = damages-backed continuity commitment"**: backed by (i) registrar-level controls above, (ii) liquidated damages on contractual exit attempt during term, (iii) for the highest tier, optional escrowed registrar credentials at a third-party escrow agent (release on documented platform breach or term expiration). The product label is honest: there is no absolute legal mechanism preventing a determined hostile owner from acting against the lease, but there are financial and operational controls that make hostile action costly and slow enough for renter migration.
+
+**Standard / Sale-Escapable tier:**
+- Owner retains full registrar control.
+- Required: registry-lock + transfer-lock enabled, auto-renew on with verified payment method, platform emergency renewal right contractually granted with recoupment.
+- Apex DNS authority requirements identical to Bonded Premium.
+- Disclosed at signup: "This domain may be sold or withdrawn during your term. Standard tier."
+
+**New launch blocker LB-W5-7**: Registrar-partner technical/legal confirmation. Platform must (i) select registrar partner(s), (ii) confirm via written statement from the registrar that the proposed dual-control / delegated-admin / lock arrangements are supported and survive owner non-cooperation scenarios, (iii) get counsel sign-off on the resulting contractual + technical model. Without this confirmation, neither tier can launch.
+
+**Residual risk acknowledged**: even with the above, a determined hostile owner who is willing to commit registrar-account fraud or domain theft can still cause renter loss. The platform's remedy in those cases is damages + insurance + RPG migration; absolute prevention is not promised.
+
+### §9.2 Reserve numerics deferred to W7 (resolves B2; partial M2)
+
+**Status: numerics-pending; structural decisions locked.**
+
+All v0 §3.1 reserve numerics ($24k migration, $50k indemnification, $74–82k aggregate) are downgraded to **PLACEHOLDER**. Rev-1 commits only to the *structure* of three reserves; sizing is a W7 deliverable.
+
+W7 reserve-sizing inputs (required before launch):
+1. Per-incident-type expected-value loss model:
+   - Sale-escape invocation (frequency × per-event migration cost).
+   - Owner default / non-cooperation (frequency × migration + legal cost).
+   - RBL incident (frequency × pause cost + delisting cost).
+   - Indemnity claim (Layer 1+2, frequency × cap or actuals).
+   - Legal defense floor (counsel hourly + retainer expectations even on no-payout claims).
+2. Distinction between **balance-sheet target reserve** (cash held to absorb claims when they arrive) and **annual expected loss** (P&L line). The v0 numbers conflated these.
+3. Per-renter/month cost impact, broken out by tier (Bonded Premium vs. Standard).
+4. Updated capital requirement under three scenarios:
+   - Base W5 reserve load (steady-state).
+   - One major domain migration event in Y1 (e.g., 50-renter Bonded Premium domain rug-pull).
+   - One indemnity claim hitting the $25k insurance deductible + $50k legal-defense floor.
+5. Explicit W7 decision among five levers: raise prices, reduce owner share, narrow Standard tier, reduce sale-escapable inventory cap below 30%, raise more capital. Status-quo Rev-2 is not assumed adequate.
+
+Until W7 produces these numbers, **no W5 reserve figure is treated as locked.** Rev-2 §2i is *not* claimed to absorb the W5 burden.
+
+### §9.3 Sale-escape and Premium enforcement mechanism (resolves B3)
+
+**Status: locked at design level pending counsel sign-off.**
+
+Replaces v0 §1.2 clause 4 + v0 §1.7. Sale-escape clause for Standard tier is rewritten with anti-avoidance + seasoning + greatest-of fee + escrow:
+
+**Anti-avoidance triggers** (any one constitutes a "Change of Control" invoking sale-escape):
+- Asset sale of the domain.
+- Equity / membership-interest sale of the entity owning the domain ≥ 50% transfer.
+- Beneficial-ownership change ≥ 50% (per FinCEN beneficial-ownership reporting standard).
+- Registrar-of-record transfer to any non-partner registrar.
+- DNS-authority transfer (change of nameservers away from platform-required configuration).
+- Any encumbrance, lien, security interest, or pledge of the domain.
+- Sale or assignment of the lease itself.
+- Owner enters bankruptcy, receivership, or assignment for benefit of creditors.
+
+Lease binds successors-in-interest; any purchaser/assignee acquires the domain *subject to* the lease. Sale-escape exit fee is owed on any of the above; the buyer's notice and the existence of the lease are recorded in WHOIS commentary where the registrar permits and via UCC-1-style filing where applicable (counsel to confirm appropriate mechanism for domain interests).
+
+**12-month seasoning**: no sale-escape invocation during the first 12 months of any domain's listing (Standard or Bonded Premium). Exception: extraordinary platform-approved sale (e.g., owner medical emergency).
+
+**Exit fee recalculated** as the **greatest of**:
+- $1,000 × number of active renters at notice (was $500 — doubled to actually deter at small inventory).
+- 12 months of platform's projected gross revenue from the domain at notice (vs. v0's "6 months net contribution" — uses projected gross, not net, and 12 months not 6).
+- 5% of sale proceeds above a $25k floor.
+
+Capped at $250k absolute (the cap exists so owners with extremely high-value domains don't refuse the lease).
+
+**Sale-proceeds escrow**: closing instructions to the broker (Sedo / Afternic / GoDaddy / direct) require platform consent for proceeds release; alternatively a deposit-and-release escrow at a third-party agent. If no broker is involved (private direct sale), exit fee must be deposited with platform before the registrar transfer-out is initiated. Counsel to confirm enforceability in Delaware governing law against third-party purchaser.
+
+**Pre-signing affirmation** (mandatory, not optional, per v0 §1.7 supplement): owner must affirm at signup that they are not currently in active sale negotiations and have no listed-for-sale presence on Sedo / Afternic / Flippa within the past 90 days. Misrepresentation = lease breach + immediate exit-fee acceleration.
+
+**Bonded Premium sale enforcement**: Bonded Premium (renamed from "sale-free") cannot invoke sale-escape during term. Owner attempting Change of Control on a Bonded Premium domain triggers (a) immediate breach, (b) liquidated damages = 24 months of platform projected gross revenue from the domain or $50k (whichever greater), (c) registrar lock-out asserted under §9.1 controls, (d) all renters migrated under RPG with full refund + 12-month replacement service credit (raised from 1-month to recognize identity-disruption magnitude).
+
+**RoFR** (right of first refusal) remains rejected — the platform's capital exposure and bid-management overhead outweighs the deterrent value once the greatest-of exit fee + sale-proceeds escrow are in place.
+
+### §9.4 Indemnification and insurance reality check (resolves B4; partial M6)
+
+**Status: locked at design level pending insurance broker quote (LB-W5-4) and counsel coverage review (LB-W5-7).**
+
+Replaces v0 §1.6:
+
+**Layer 1 + 2 cap raised**: per-incident cap $25,000 (was $5,000) — sized to match expected $25k insurance deductible so the insurance backstop actually responds to a claim that hits the cap. Annual aggregate $100,000 (was $50,000).
+
+**Layer 3 redesigned**: "renter's-insurance requirement" REMOVED for consumer renters. Replaced with:
+- Above-cap consumer recovery is assumed = $0 in planning (planning value).
+- **Commercial / business use HARD BANNED via AUP** (not merely excluded from indemnity). Business use grounds for immediate termination + lease forfeiture, not just a coverage exclusion. Tightens v0 §2.1.
+- Structural ceiling on potential damages: monthly outbound-volume cap (≤ 200 messages/day, ≤ 1,500 messages/week — already implicit in v0 §2.1, now lifted to a hard technical limit enforced at the bridge layer).
+- For renter slots that breach business-use AUP and cause harm, platform retains right to seek damages from the renter, but does not budget recovery into reserves.
+
+**Insurance binder + coverage summary review by counsel = launch blocker** (LB-W5-4 expanded). Specific scrutinies:
+- Email-abuse / spam / phishing exclusion language.
+- Intentional-acts-of-customer exclusion.
+- Contractual-indemnity coverage (covering platform's contractual indemnity obligations to owners and renters).
+- Defense-cost treatment (inside vs. outside policy limits).
+- Media / personal-injury / Coverage B equivalent.
+- Whether Cyber Liability + Tech E&O is the right policy stack or whether a media-liability rider is also needed.
+
+**Insurance premium estimate revised**: $6–12k/yr for $1M aggregate / $25k deductible (was $4.5–8k). Broker quote required before launch.
+
+**Counsel budget revised**: see §9.6 for full breakdown; insurance-coverage review adds $1–3k.
+
+### §9.5 Dispute safe-mode (resolves B5; partial M5)
+
+**Status: locked at design level.**
+
+Replaces v0 §1.5:
+
+**Tier 0 (clear evidence either way)**: unchanged from v0.
+
+**Tier 1 (ambiguous evidence) — graduated safe-mode triggered AUTOMATICALLY** on any owner complaint with prima facie evidence (timestamped third-party email, explicit reference to the renter's address). The renter is not suspended, but the slot enters safe-mode:
+- Outbound forwarding throttled to 50 messages/day (down from 200 default).
+- Send-as / Gmail bridge configuration changes frozen (renter can use the slot but cannot reconfigure it during the window).
+- Inbound forwarding log retention raised from 90 → 180 days for the slot.
+- **72-hour initial triage deadline** (down from 14 days for full investigation). At T+72 hours, ops issues a preliminary disposition: dismiss (safe-mode lifted), escalate to Tier 2, or extend with cause for an additional 7-day investigation window.
+- Renter is notified of safe-mode entry and the reason.
+
+**Owner good-faith bond mechanics specified** (resolves minor):
+- Bond amount: $500.
+- Held in: Stripe Connect platform balance under owner-attributed segregated ledger entry; not commingled with operating funds.
+- Buys procedurally: third-party adjudicator engagement (escalates Tier 1 → Tier 2 immediately) AND expedited 5-business-day adjudicator decision deadline.
+- Forfeit conditions: adjudicator finds owner's complaint vexatious, retaliatory, or knowingly false. Forfeited bond paid to renter as compensation.
+- Refund conditions: owner prevails OR dispute is resolved via mediation OR adjudicator finds genuine ambiguity (no fault on either side).
+- Maximum hold window: 30 days from posting. After 30 days, bond is automatically refunded if no adjudicator decision has issued; bond posting does not extend the window.
+
+**Symmetrical renter cost-deposit**: if a Tier-2 escalation occurs and the renter contests after the adjudicator has reviewed initial evidence, renter may post a $100 cost-deposit to require full adjudicator hearing. Same forfeit / refund mechanics, scaled to the deposit amount.
+
+**Emergency exception**: credible third-party complaint with corroborating headers (e.g., named victim providing message-ID + DKIM signature confirming renter origin) bypasses Tier 1 to Tier 2 immediately, with safe-mode plus *throughput pause* (not just throttle) until Tier-2 decision.
+
+**Defaults during dispute (revised)**: the renter remains operational under safe-mode; binary "fully active vs. fully suspended" is replaced with the graduated state. This protects against weaponized owner accusations while closing the abuse window the v0 default created.
+
+### §9.6 Reserve architecture and Stripe / money-transmitter posture (resolves M2; supports M1)
+
+**Status: locked at structural level pending counsel sign-off (LB-W5-7) and Stripe written confirmation (LB-W5-8).**
+
+**Owner rolling reserve (10%, 180 days)**: held in Stripe Connect platform balance. Funds are owner-attributable but classified for marketplace purposes as "facilitator funds in transit" — not formal escrow, not trust funds. Platform discloses in renter ToS that these funds are *not* renter-protective; they protect against owner-side chargebacks and abuse cleanup only.
+
+**Migration reserve**: held in a **separate platform-segregated bank account** designated FBO ("for benefit of") renter-class beneficiaries. Restricted-cash classification on financial statements. Bankruptcy-remoteness via segregation + FBO designation, not via formal trust (counsel to confirm whether this is sufficient or whether a formal trust structure is required for the size of the reserve). Insolvency-priority disclosure included in renter ToS: in platform insolvency, migration reserve is asserted as customer-benefit funds, not corporate assets; recovery position is determined by court.
+
+**Indemnification reserve**: corporate operating-account ledger entry; treated as accrued liability per GAAP, not segregated funds. Insurance is the primary backstop; the reserve is a tactical buffer for claims under deductible.
+
+**Reserve documentation**: financial statements include a "Marketplace Continuity Reserves" footnote enumerating all three reserves, balance, draw-down history, and replenishment policy. Reviewed annually by counsel.
+
+**Stripe Connect / money-transmitter posture (M1 elevation)**: counsel memo + Stripe written confirmation = launch blocker LB-W5-8. Specific items requiring written confirmation:
+- Merchant of record on renter charges (platform).
+- Payout-timing control (platform discretion vs. Stripe-fixed).
+- Whether reserve-holding location (Stripe balance vs. platform bank) changes regulatory classification.
+- Whether platform discretion over migration / indemnity reserves crosses a line.
+- State-by-state treatment for NY (especially), CA, TX, FL.
+- Position on whether US-only MVP (per §9.10) limits VARA / state DFS interest.
+
+If counsel finds the analysis fails in any state, the platform restricts onboarding to compliant states for MVP rather than acquire MTL.
+
+### §9.7 Owner death / incapacity operational plan (resolves M7)
+
+**Status: locked at design level pending counsel sign-off on probate interactions.**
+
+Replaces v0 §1.2 clause 9:
+
+- **Successor contact required at owner onboarding** (not optional). Owner must provide name + email + phone of a designated emergency contact who is authorized to receive notice in the event of owner incapacity.
+- **Auto-renew enforced and verified annually** by platform via WHOIS expiry monitoring. If auto-renew status cannot be confirmed (e.g., owner's payment method expired), platform's emergency renewal right under §9.1 is triggered with recoupment notification.
+- **Platform emergency renewal right** contractually granted: platform may pay registrar renewal fees and recoup from next owner payout. Where the registrar does not permit third-party renewal, the platform notifies the successor contact and requires successor to act within 7 days.
+- **Bonded Premium domains with assessed value > $25k**: required to be held by an LLC, trust, or estate-planning entity, not a natural person. Reduces probate exposure.
+- **Estate-non-response escalation**: 7-day acknowledgment, 14-day cooperation request, 30-day breach declaration. After 30 days of estate non-cooperation, lease is treated as breached (no liquidated damages against estate beyond loss of platform payouts), all renters migrated under RPG, domain status flagged "estate-frozen" until resolved.
+- **Solo-owner foreign domains** (non-US owner of record): excluded from MVP per §9.10.
+
+### §9.8 Sister-domain pool — three explicit functions (resolves M4)
+
+**Status: locked at design level.**
+
+Replaces v0 §2.3:
+
+The owned-domain inventory (W2 A-W2-14, W3 §2b-bis) is split into three explicit functional pools:
+
+1. **Revenue owned inventory**: monetized normally as platform-owned domains. Standard renter slots. 100% gross margin to platform. No special continuity treatment.
+2. **Reserved migration inventory**: domains held back specifically for RPG migration destinations. Target capacity = 5% of Y2-ceiling concurrent renter count (W7 to confirm). Not offered for sale to renters during reserve period. Pricing of this insurance cost is modeled into the migration reserve under §9.2.
+3. **Emergency non-equivalent migration path**: when no surname-equivalent destination exists for an evicted renter (e.g., the renter's surname is unique enough that no sister domain is in the pool), the renter receives:
+   - Full pro-rated refund.
+   - 12-month equivalent-service credit (raised from v0's 1 month — see §9.9 minor cleanup).
+   - $15 ICANN registration credit + free 3-month forwarding-only setup on a personal domain of the renter's choice.
+   - Honest framing in ToS and migration communications: **"This is compensation for disruption, not identity restoration. The platform makes no guarantee that any equivalent identity exists at any other domain."**
+
+**Surname-distance rule** (for reserved migration inventory matching): Levenshtein distance ≤ 2 from original domain (e.g., `johnson.com` → `johnston.com` qualifies; `johnson.com` → `smith.com` does not). Renter has refusal right; refusal converts to emergency non-equivalent path.
+
+### §9.9 Minor cleanup (resolves §8.3 minors)
+
+**Status: locked.**
+
+- **K-W5-1 denominator clarified**: "Standard sale-escapable inventory domain-years" — this is a marketplace-wide rate over the Standard tier, not over the W2 Long-Tail Portfolio segment. K-W2-8 placeholder is locked into K-W5-1 at this Rev-1 with the Standard tier scope.
+- **"DPA template per renter" REMOVED** for consumer renters. Consumer privacy notice + cookie banner per §9.10 (US-only). DPA reserved for any future B2B product.
+- **COPPA age requirement → renter age 18+** (was 13+). Aligns with W2 adult-renter scope; payments + IDV require 18+ regardless.
+- **RPG migration credit reframed**: from "1-month migration credit" (v0) to "12-month equivalent-service credit when no surname-equivalent destination is available" (per §9.8) — and explicitly framed as compensation, not identity protection. ToS and signup flow must say: *"If your domain is withdrawn, you may lose the email identity you registered. The platform's protections are designed to give you notice, time, and compensation — not to guarantee that an identical identity is available elsewhere."*
+- **Sales tax / VAT scope**: VAT removed (Option A US-only per §9.10). Sales-tax via Avalara or TaxJar; nexus analysis = counsel scope item under LB-W5-7. Initial nexus expected in CA + Delaware; expanded as renter footprint develops.
+
+### §9.10 Cross-border MVP scope (resolves M8) — Option A LOCKED
+
+**Status: locked.**
+
+**Decision**: MVP is **US-only** for both owners and renters. EU/UK/non-US signups blocked at:
+- IP-geolocation check at signup (best-effort; not a security boundary).
+- Billing address verification (Stripe-side billing-address check); non-US billing addresses rejected.
+- Owner onboarding requires US W-9 (citizen or US-resident entity).
+- Renter onboarding requires US billing address + US-issued payment method.
+
+GDPR, UK GDPR, SCCs, EU DSA, and UK Online Safety Act analysis is **deferred to post-MVP** and removed from launch-blocker scope. v0 §1.8 regimes 2 and 8 are downgraded to "monitor, not active."
+
+Rationale: this aligns with W2's recommendation (W2 §legal review) and removes substantial counsel scope from MVP. International expansion is a post-MVP product decision, not a launch-blocker.
+
+CCPA / CPRA and other US state privacy laws remain in scope (v0 §1.8 regime 3 unchanged).
+
+### §9.11 Kill-criteria absolute triggers (resolves M5)
+
+**Status: locked.**
+
+Supplements K-W5-3 with three early-stage absolute triggers (see also `_kill_criteria.md`):
+
+- **K-W5-3a**: First owner-initiated rug-pull (any cause) within first 12 months of marketplace operation → FREEZE new Standard sale-escapable onboarding pending root-cause review. Also reduces Standard cap from 30% → 20% pending review outcome.
+- **K-W5-3b**: Any Bonded Premium owner attempts Change of Control (per §9.3 anti-avoidance triggers) → SUSPEND all Bonded Premium product claims in marketing; trigger immediate registrar-control architecture review under §9.1.
+- **K-W5-3c**: Any single rug-pull affecting >25 renters → IMMEDIATE W7 reforecast; pause new domain onboarding until reforecast completes.
+
+K-W5-3 (steady-state >5/100 domain-years) trigger action upgraded from vague "architecture review" to explicit decision menu: (a) suspend new sale-escapable supply, (b) require registrar escrow for new Bonded Premium, (c) raise exit fees per §9.3, (d) reduce Standard cap below 30%, (e) reprice migration reserve into renter pricing.
+
+### §9.12 Revised launch blocker list
+
+**Status: locked.**
+
+Rev-1 supersedes v0 §Executive Summary "Six MVP Launch Blockers". Final list:
+
+1. **LB-W5-1**: External counsel review of Master Owner Lease Agreement (Bonded Premium and Standard variants).
+2. **LB-W5-2**: External counsel review of Renter ToS (incl. RPG, AUP, indemnification posture, US-only scope, money-transmitter disclaimer).
+3. **LB-W5-3**: External counsel review of regulatory posture memo (US-only scope per §9.10).
+4. **LB-W5-4**: Insurance broker quote + binder + counsel coverage-summary review (per §9.4).
+5. **LB-W5-5**: Adjudicator-of-record decision (in-house Tier-3 vs. third-party vendor) per §9.5.
+6. **LB-W5-6**: Renewal-monitoring service spec'd and engineered (rug-pull failure mode 4).
+7. **LB-W5-7**: Registrar-partner technical/legal confirmation per §9.1 (NEW in Rev-1).
+8. **LB-W5-8**: Stripe written confirmation of marketplace-facilitator posture per §9.6 (NEW in Rev-1).
+9. **LB-W5-9**: Sale-proceeds escrow / UCC-1-style filing mechanism confirmed by counsel per §9.3 (NEW in Rev-1).
+10. **LB-W5-10**: W7 reserve EV-loss model + capital reconciliation completed per §9.2 (NEW in Rev-1; gates Rev-2 capital plan validity).
+
+### §9.13 Counsel budget — Rev-1 itemized estimate (resolves M6)
+
+**Status: estimate; full quote required before commit to W7 capital line.**
+
+Replaces A-W5-1 internal $15–35k estimate. Itemized:
+
+| Category | Estimated band | Notes |
+|---|---|---|
+| Commercial contracts (Master Lease + Renter ToS, both variants) | $8–15k | Includes Bonded Premium + Standard variant work |
+| Privacy / state-privacy / consumer-notice (US-only scope) | $2–4k | Reduced from v0 due to §9.10 EU exclusion |
+| Payments / MSB / state money-transmitter analysis | $4–8k | NY, CA, TX, FL focus |
+| Tax / sales-tax nexus | $2–4k | Avalara/TaxJar onboarding included |
+| Insurance coverage review | $1–3k | Counsel reviews binder text |
+| Domain / registrar / ICANN counsel | $2–4k | Confirms §9.1 control mechanisms |
+| Reserve architecture / bankruptcy-remoteness | $2–4k | Confirms §9.6 segregation sufficiency |
+| Sale-proceeds escrow / UCC-1 mechanism | $1–3k | Per §9.3 |
+| **Total** | **$22–45k** | One-time pre-launch line, not opex |
+
+Budgeted as **$50k pre-launch line item** with 10% contingency. Feeds W7 capital plan as a separate line from Rev-2 §2i opex. If quoted total exceeds the envelope, that is a W7 go/no-go input.
+
+### §9.14 Rev-1 closure criteria
+
+**Locked at this Rev-1:**
+- Registrar/DNS control architecture (§9.1, pending registrar-partner confirmation).
+- Reserve structure (§9.6); numerics deferred to W7.
+- Sale-escape and Bonded Premium enforcement mechanism (§9.3, pending counsel sign-off).
+- Indemnification cap structure raised to $25k incident / $100k aggregate (§9.4).
+- Dispute graduated safe-mode (§9.5).
+- US-only MVP scope (§9.10).
+- Sister-domain pool three-function split (§9.8).
+- Death/incapacity operational plan (§9.7).
+- Kill-criteria absolute triggers K-W5-3a/3b/3c (§9.11).
+- Launch-blocker list of 10 items (§9.12).
+
+**Still open / handed to W6/W7:**
+- Numeric reserve sizing (W7).
+- Insurance broker quote (LB-W5-4).
+- Counsel sign-off on all items (LB-W5-1/2/3/7/9).
+- Stripe written confirmation (LB-W5-8).
+- Registrar-partner selection and confirmation (LB-W5-7).
+- Adjudicator-of-record decision (LB-W5-5).
+- Adversarial scenarios from §6 — handed to W6 Red Team.
+
+**Rev-1 is conditionally locked.** A successful W6 Red Team pass without finding a structural exploit may move Rev-1 to "fully locked." A second rubber-duck pass on Rev-1 itself is recommended before W6 opens.
+
+---
+
+*End of W5 Rev-1 — 2026-04-27. Next: rubber-duck pass on Rev-1 (recommended) before opening W6 Red Team.*
